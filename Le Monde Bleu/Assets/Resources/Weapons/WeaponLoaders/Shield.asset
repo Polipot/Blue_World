@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e999d5783d82794fba3e1c2b31d1122, type: 3}
+  m_Name: Shield
+  m_EditorClassIdentifier: 
+  myWeaponType: 64
+  myHandNumber: 0
+  myAnimator: {fileID: 9100000, guid: 168ebf61639d2cf4e8e72b14dbafb6a0, type: 2}
+  LinkedComps:
+  - {fileID: 11400000, guid: 2b1740f76d8f8ad4bb0e5bf6f4c2c138, type: 2}
+  myGameObject: {fileID: 5073694452338197038, guid: 62456eb9d9cd54945b08e394e8408567,
+    type: 3}
+  MeleeWeapon: 0
+  Nom: Shield
+  Description: The first line of defense of a true warrior, staying safe is the first
+    stage to defeat an opponent.
+  BonusCounter: 10
+  BonusTranchant: 0
+  BonusPerforant: 0
+  BonusMagique: 0
+  BonusChoc: 0
+  BonusFrappeHeroique: 0
+  EnergyGain: 0

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e999d5783d82794fba3e1c2b31d1122, type: 3}
+  m_Name: Black Sword
+  m_EditorClassIdentifier: 
+  myWeaponType: 2
+  myHandNumber: 0
+  myAnimator: {fileID: 9100000, guid: 01d236e758cad0348be0897836af4a1e, type: 2}
+  LinkedComps:
+  - {fileID: 11400000, guid: 3d75194f1c91bba4eaf192de6b8cc9c5, type: 2}
+  myGameObject: {fileID: 2345994288676045465, guid: b3c6d97f155cc5a40a245adbfd1b5bc9,
+    type: 3}
+  MeleeWeapon: 1
+  Nom: Black Sword
+  Description: A cursed sword, alterated by the detress of the owner.

@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4df6e13ed3e40d34aa9b4dfd72353416, type: 3}
+  m_Name: Awoken Bow
+  m_EditorClassIdentifier: 
+  Name: Awoken Bow
+  Description: One shot from this great weapon surpasses by far the power of others
+    common bows, and the targets will know it quickly.
+  myCompetenceType: 0
+  EnergyCost: 3
+  myAttaqueType: 2
+  Anti_Perso: 0
+  Anti_Ground: 0
+  Vision_Affected: 1
+  TargetingAllies: 0
+  MinDegats: 20
+  MaxDegats: 50
+  InitiativeDegats: 0
+  AppliedStates: []
+  "Pouss\xE9e": 0
+  SelectableCases:
+  - {x: -1, y: 1}
+  - {x: -2, y: 2}
+  - {x: -1, y: 2}
+  - {x: 0, y: 2}
+  - {x: 1, y: 2}
+  - {x: -3, y: 3}
+  - {x: -2, y: 3}
+  - {x: -1, y: 3}
+  - {x: 0, y: 3}
+  - {x: 1, y: 3}
+  - {x: 2, y: 3}
+  - {x: -4, y: 4}
+  - {x: -3, y: 4}
+  - {x: -2, y: 4}
+  - {x: -1, y: 4}
+  - {x: 0, y: 4}
+  - {x: 1, y: 4}
+  - {x: 2, y: 4}
+  - {x: 3, y: 4}
+  - {x: -3, y: 5}
+  - {x: -2, y: 5}
+  - {x: -1, y: 5}
+  - {x: 0, y: 5}
+  - {x: 1, y: 5}
+  - {x: 2, y: 5}
+  - {x: 3, y: 5}
+  - {x: -2, y: 6}
+  - {x: -1, y: 6}
+  - {x: 0, y: 6}
+  - {x: 1, y: 6}
+  - {x: 2, y: 6}
+  - {x: -1, y: 7}
+  - {x: 0, y: 7}
+  - {x: 1, y: 7}
+  - {x: 0, y: 8}
+  PaternCase:
+  - {x: 0, y: 0}
+  Logo: {fileID: 0}
+  TriggerName: Attack

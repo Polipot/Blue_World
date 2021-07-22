@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e999d5783d82794fba3e1c2b31d1122, type: 3}
+  m_Name: Halberd
+  m_EditorClassIdentifier: 
+  myWeaponType: 2
+  myHandNumber: 1
+  myAnimator: {fileID: 9100000, guid: 01d236e758cad0348be0897836af4a1e, type: 2}
+  LinkedComps:
+  - {fileID: 11400000, guid: b0b8ea06429d8304c8ac9172b55bce57, type: 2}
+  myGameObject: {fileID: 8153994457973293995, guid: eb11f501a4bd37c48b47f2e6d1592075,
+    type: 3}
+  MeleeWeapon: 1
+  Nom: Halberd
+  Description: Weapon of the best guards in the world, it's a compromise between
+    a spear and an axe, if the owner is ready to abandon his shield.

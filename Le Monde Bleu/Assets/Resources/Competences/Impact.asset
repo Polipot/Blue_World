@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4df6e13ed3e40d34aa9b4dfd72353416, type: 3}
+  m_Name: Impact
+  m_EditorClassIdentifier: 
+  Name: Impact
+  Description: A well placed and powerful attack, that's the secret against the more
+    powerfull warriors.
+  myCompetenceType: 0
+  EnergyCost: 4
+  myAttaqueType: 4
+  Anti_Perso: 0
+  Anti_Ground: 0
+  Vision_Affected: 1
+  TargetingAllies: 0
+  MinDegats: 10
+  MaxDegats: 20
+  InitiativeDegats: 10
+  AppliedStates: []
+  "Pouss\xE9e": 0
+  SelectableCases:
+  - {x: 0, y: 1}
+  PaternCase:
+  - {x: 0, y: 0}
+  Logo: {fileID: 0}
+  TriggerName: Attack

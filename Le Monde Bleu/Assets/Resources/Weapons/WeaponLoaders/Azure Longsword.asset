@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e999d5783d82794fba3e1c2b31d1122, type: 3}
+  m_Name: Azure Longsword
+  m_EditorClassIdentifier: 
+  myWeaponType: 2
+  myHandNumber: 1
+  myAnimator: {fileID: 9100000, guid: 43411fa435ecf0b4aab6be32176bd564, type: 2}
+  LinkedComps:
+  - {fileID: 11400000, guid: 75c6e31b991010f45ab7e49e3d141909, type: 2}
+  - {fileID: 11400000, guid: dedb65a31ce0a2f4899c7f5d0d4a32ee, type: 2}
+  myGameObject: {fileID: 2345994288676045465, guid: f192b2b83935d9543830abba3038f7e9,
+    type: 3}
+  MeleeWeapon: 1
+  Nom: Azure Longsword
+  Description: A legendary weapon, rare enought to make some persons consider this
+    sword's owner as a choosen one.

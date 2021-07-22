@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e4d2d54d104788418fc4cdf92acbc49, type: 3}
+  m_Name: TestStart
+  m_EditorClassIdentifier: 
+  DialogueNames:
+  - Porvas Marte
+  - "H\xE9l\xE8ne Acervus"
+  - Wyllis Heyno
+  - Naarion
+  - Pirenion
+  - The Carcass
+  - Champion
+  DialogueLines:
+  - I've dreamed about this all the day!
+  - You are a strange man, you know that?
+  - Don't hurt yourselves, this is just a friendly fight.
+  - ...Until we decide it's not.
+  - I don't need weapon to surpass all of you.
+  - You can't surpass something you can't see, fish.
+  - What am I doing here?

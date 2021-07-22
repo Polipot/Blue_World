@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e999d5783d82794fba3e1c2b31d1122, type: 3}
+  m_Name: Rogue Wave Art
+  m_EditorClassIdentifier: 
+  myWeaponType: 24
+  myHandNumber: 1
+  myAnimator: {fileID: 9100000, guid: 2d06a7aac347e4f43ab3edbbbacb8328, type: 2}
+  LinkedComps:
+  - {fileID: 11400000, guid: 3c745756de1a0284aa315c0197adde0a, type: 2}
+  myGameObject: {fileID: 4349574829562014848, guid: bbc245a1ec0ec6a4a95ad0a539760583,
+    type: 3}
+  MeleeWeapon: 1
+  Nom: Rogue Wave Art
+  Description: Mastered by some between the octavians, it's most exotic weapon that
+    the ocean have ever provided.

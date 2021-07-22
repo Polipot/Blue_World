@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e999d5783d82794fba3e1c2b31d1122, type: 3}
+  m_Name: Awoken Bow
+  m_EditorClassIdentifier: 
+  myWeaponType: 8
+  myHandNumber: 1
+  myAnimator: {fileID: 9100000, guid: da0a90b56392614418f3fa8fb57ae890, type: 2}
+  LinkedComps:
+  - {fileID: 11400000, guid: 66827288b977af344a631996fa1430db, type: 2}
+  myGameObject: {fileID: 6024487040436349306, guid: 24b522f85ffb95341ae9298292f815fb,
+    type: 3}
+  MeleeWeapon: 0
+  Nom: Awoken Bow
+  Description: A strange bow, linked to multiples rings which can alterate the type
+    of powers used by this weapon if in contact with it.
+  BonusCounter: 0
+  BonusTranchant: 0
+  BonusPerforant: 0
+  BonusMagique: 0
+  BonusChoc: 15
+  BonusFrappeHeroique: 0
+  EnergyGain: 0

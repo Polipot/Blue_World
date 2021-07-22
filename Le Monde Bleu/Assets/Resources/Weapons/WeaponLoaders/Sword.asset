@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e999d5783d82794fba3e1c2b31d1122, type: 3}
+  m_Name: Sword
+  m_EditorClassIdentifier: 
+  myWeaponType: 2
+  myHandNumber: 0
+  myAnimator: {fileID: 9100000, guid: 01d236e758cad0348be0897836af4a1e, type: 2}
+  LinkedComps:
+  - {fileID: 11400000, guid: 10f5215c5a9be424f9ba84dfb8385cda, type: 2}
+  myGameObject: {fileID: 2345994288676045465, guid: a4cb289721796d8499953b703847b893,
+    type: 3}
+  MeleeWeapon: 1
+  Nom: Sword
+  Description: A weapon made to forge empire, or to destroy them.
+  BonusCounter: 0
+  BonusTranchant: 0
+  BonusPerforant: 0
+  BonusMagique: 0
+  BonusChoc: 0
+  BonusFrappeHeroique: 0
+  EnergyGain: 0
