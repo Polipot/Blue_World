@@ -76,11 +76,18 @@ public class anAI : MonoBehaviour
             Cooled = false;
 
             FightEntity myNextTarget = null;
-            List<FightEntity> AvailableTargets = new List<FightEntity>();
-            for (int i = 0; i < TM.activeFighters.Count; i++)
+            /*List<FightEntity> AvailableTargets = new List<FightEntity>();
+            */
+
+            List<FightEntity> AvailableTargets = thePathfinding.GetEntitiesInRange(myFightEntity, myFightEntity.RemainingMovement);
+
+            if(AvailableTargets.Count == 0)
             {
-                if (isAnEnemy(myFightEntity, TM.activeFighters[i]))
-                    AvailableTargets.Add(TM.activeFighters[i]);
+                for (int i = 0; i < TM.activeFighters.Count; i++)
+                {
+                    if (isAnEnemy(myFightEntity, TM.activeFighters[i]))
+                        AvailableTargets.Add(TM.activeFighters[i]);
+                }
             }
 
             if (myBattleSpirit == BattleSpirit.Opportuniste)

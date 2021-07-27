@@ -221,7 +221,18 @@ public class DialogueManager : Singleton<DialogueManager>
             ID.Appear();
         }
         else if (myDialogueType == DialogueType.Event)
+        {
             TM.myFS = FightSituation.Fight;
+            if (!TM.NeedsNewTurn)
+            {
+                FightEntity active = TM.activeFighters[TM.TurnIndex];
+                if (active.myAI && active.myAI.NeedsToBeCooled && active.myAI.Cooled)
+                    active.myAI.Cooled = false;
+                else
+                    TM.activeFighters[TM.TurnIndex].ActualizeMovement();
+            }
+        }
+            
         else if (myDialogueType == DialogueType.End)
             TM.EndCombat();
         Accroche.SetActive(false);

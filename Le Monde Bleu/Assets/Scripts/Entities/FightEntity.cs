@@ -21,7 +21,7 @@ public class FightEntity : MonoBehaviour
     CompétencesUI CUI;
     DialogueManager DM;
 
-    anAI myAI;
+    [HideInInspector]public anAI myAI;
     [HideInInspector]
     public WeaponFX myWeaponFX;
 
@@ -638,50 +638,54 @@ public class FightEntity : MonoBehaviour
         TM.EndTurn();
     }
 
-    void ActualizeMovement()
+    public void ActualizeMovement()
     {
         if (TM.AreBothSideAlive())
         {
             CM.MovementClickableCases.Clear();
 
-            mySituation = Situation.ChooseMove;
-
-            List<Node> myNodes = thePathfinding.ReachableNodes(transform, RemainingMovement);
-
-            for (int i = 0; i < myNodes.Count; i++)
+            bool ThereIsDialogue = TM.VerifyEventDialogues();
+            if (!ThereIsDialogue)
             {
-                CM.MovementClickableCases.Add(myNodes[i].myCase);
+                mySituation = Situation.ChooseMove;
+
+                List<Node> myNodes = thePathfinding.ReachableNodes(transform, RemainingMovement);
+
+                for (int i = 0; i < myNodes.Count; i++)
+                {
+                    CM.MovementClickableCases.Add(myNodes[i].myCase);
+                    if (myAlignement == Alignement.Membre)
+                        myNodes[i].myCase.MakeWalkable(true);
+                }
+
                 if (myAlignement == Alignement.Membre)
-                    myNodes[i].myCase.MakeWalkable(true);
-            }
-
-            if (myAlignement == Alignement.Membre)
-            {
-                foreach (Transform child in CUI.transform)
                 {
-                    Destroy(child.gameObject);
+                    foreach (Transform child in CUI.transform)
+                    {
+                        Destroy(child.gameObject);
+                    }
+
+                    usableCompetences = ActualizedUsableComps();
+
+                    for (int i = 0; i < myCompetences.Count; i++)
+                    {
+                        GameObject newButton = Instantiate(BoutonCompPath, CUI.transform);
+                        newButton.GetComponent<CompetenceButton>().Activate(myCompetences[i]);
+                        if (myCompetences[i].EnergyCost <= Energy)
+                            newButton.GetComponent<Button>().interactable = true;
+                        else
+                            newButton.GetComponent<Button>().interactable = false;
+                    }
                 }
 
-                usableCompetences = ActualizedUsableComps();
-
-                for (int i = 0; i < myCompetences.Count; i++)
+                if (PM.actualEntity == this)
                 {
-                    GameObject newButton = Instantiate(BoutonCompPath, CUI.transform);
-                    newButton.GetComponent<CompetenceButton>().Activate(myCompetences[i]);
-                    if (myCompetences[i].EnergyCost <= Energy)
-                        newButton.GetComponent<Button>().interactable = true;
-                    else
-                        newButton.GetComponent<Button>().interactable = false;
+                    PM.PlayingApercu.ActualizeShowed(this);
                 }
-            }
 
-            if (PM.actualEntity == this)
-            {
-                PM.PlayingApercu.ActualizeShowed(this);
-            }
-                
 
-            TM.ActualizeBlocage();
+                TM.ActualizeBlocage();
+            }
         }
         else
         {
@@ -867,10 +871,10 @@ public class FightEntity : MonoBehaviour
     {
         float FHMultiplier = 1;
 
-        float DodgeRoll = Random.Range(0, 100);
+        float DodgeRoll = Random.Range(1, 100);
         bool Dodged = false;
 
-        float ParadeRoll = Random.Range(0, 100);
+        float ParadeRoll = Random.Range(1, 100);
         bool Pared = false;
 
         if (DodgeRoll <= Esquive && AlreadyBlocked)
@@ -975,10 +979,10 @@ public class FightEntity : MonoBehaviour
     {
         float FHMultiplier = 1;
 
-        float DodgeRoll = Random.Range(0, 100);
+        float DodgeRoll = Random.Range(1, 100);
         bool Dodged = false;
 
-        float ParadeRoll = Random.Range(0, 100);
+        float ParadeRoll = Random.Range(1, 100);
         bool Pared = false;
 
         if (DodgeRoll <= Esquive && AlreadyBlocked && Enemy.UsedCompetence.MaxDegats > 0)

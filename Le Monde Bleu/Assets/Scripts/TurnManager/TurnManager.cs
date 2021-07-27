@@ -35,6 +35,7 @@ public class TurnManager : Singleton<TurnManager>
     public aDialogue StartingDialogue;
     public aDialogue ReinforcementDialogue;
     public aDialogue EndingDialogue;
+    public List<aDialogue> OthersDialogues;
 
     // Start is called before the first frame update
     void Awake()
@@ -49,6 +50,9 @@ public class TurnManager : Singleton<TurnManager>
         CM = CaseManager.Instance;
         UISE = UIStartEnd.Instance;
         DM = DialogueManager.Instance;
+
+        for (int i = 0; i < OthersDialogues.Count; i++)
+            OthersDialogues[i].myConditionTranslated();
     }
 
     void FixedUpdate()
@@ -339,5 +343,27 @@ public class TurnManager : Singleton<TurnManager>
     {
         myFS = FightSituation.EndFight;
         UISE.TriggerEnd(WonOrLost());
+    }
+
+    public bool VerifyEventDialogues()
+    {
+        bool toReturn = false;
+
+        if(OthersDialogues.Count > 0)
+        {
+            for(int i = 0; i < OthersDialogues.Count; i++)
+            {
+                if (OthersDialogues[i].isVerified())
+                {
+                    myFS = FightSituation.Dialogue;
+                    DM.StartDialogue(OthersDialogues[i]);
+                    OthersDialogues.Remove(OthersDialogues[i]);
+                    toReturn = true;
+                    break;
+                }
+            }
+        }
+
+        return toReturn;
     }
 }

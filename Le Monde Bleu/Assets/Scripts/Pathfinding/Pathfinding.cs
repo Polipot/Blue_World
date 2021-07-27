@@ -573,6 +573,64 @@ public class Pathfinding : Singleton<Pathfinding>
         return isItHostile;
     }
 
+    public List<FightEntity> GetEntitiesInRange(FightEntity Me, int MaxDistance)
+    {
+        List<FightEntity> VerifiedEntities = new List<FightEntity>();
+        Transform BasePosition = Me.transform;
+
+        if (MaxDistance > 0)
+        {
+            Node StartPos = grid.NodeFromWorldPoint(BasePosition.position);
+            List<Node> VerifiedNodes = new List<Node>();
+
+            List<Node> StartNeighbours = grid.GetNeighbours(StartPos, false);
+
+            for (int i = 0; i < StartNeighbours.Count; i++)
+            {
+                if (!VerifiedNodes.Contains(StartNeighbours[i]))
+                {
+                    VerifiedNodes.Add(StartNeighbours[i]);
+                    if (StartNeighbours[i].myCase.EntityOnTop != null && isAnEnemy(Me, StartNeighbours[i].myCase.EntityOnTop))
+                    {
+                        VerifiedEntities.Add(StartNeighbours[i].myCase.EntityOnTop);
+                    }
+                }
+            }
+
+            for (int DistanceIndex = 2; DistanceIndex <= MaxDistance; DistanceIndex++)
+            {
+                List<Node> NewNeighbours = new List<Node>();
+
+                for (int i = 0; i < VerifiedNodes.Count; i++)
+                {
+                    List<Node> theNewNeighbours = grid.GetNeighbours(VerifiedNodes[i], false);
+                    for (int a = 0; a < theNewNeighbours.Count; a++)
+                    {
+                        if (!NewNeighbours.Contains(theNewNeighbours[a]))
+                        {
+                            NewNeighbours.Add(theNewNeighbours[a]);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < NewNeighbours.Count; i++)
+                {
+                    if (!VerifiedNodes.Contains(NewNeighbours[i]))
+                    {
+                        VerifiedNodes.Add(NewNeighbours[i]);
+                        if (NewNeighbours[i].myCase.EntityOnTop != null && isAnEnemy(Me, NewNeighbours[i].myCase.EntityOnTop))
+                        {
+                            VerifiedEntities.Add(NewNeighbours[i].myCase.EntityOnTop);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return VerifiedEntities;
+    }
+
     public Node GetCloserNode(FightEntity Me, Node UltimeTargetNode, List<Node> TheNodes, aCompetence Comp)
     {
         if (Comp.Vision_Affected)
