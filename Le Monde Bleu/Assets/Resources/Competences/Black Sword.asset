@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Black Sword
   m_EditorClassIdentifier: 
   Name: Black Sword
+  myFighter: {fileID: 0}
+  LinkedWeapon: {fileID: 0}
+  WeaponFilter: -1
   Description: If you are hurted, then it's already too late. The Stone Curse never
     forget to claim a life.
   myCompetenceType: 0
@@ -27,6 +30,24 @@ MonoBehaviour:
   InitiativeDegats: 0
   AppliedStates:
   - Curse of the Stone
+  ModelStates:
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
+  - {fileID: 11400000, guid: 642e8d7f31b747142a1f9ba78d2fb325, type: 2}
   "Pouss\xE9e": 0
   SelectableCases:
   - {x: 0, y: 1}
@@ -34,3 +55,5 @@ MonoBehaviour:
   - {x: 0, y: 0}
   Logo: {fileID: 0}
   TriggerName: Attack
+  BaseOpportunity: 5
+  PatternIsDirectionnal: 0

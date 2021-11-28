@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Azure Slash
   m_EditorClassIdentifier: 
   Name: Azure Slash
+  myFighter: {fileID: 0}
+  LinkedWeapon: {fileID: 0}
+  WeaponFilter: -1
   Description: Even staying together is a bad idea when fighting against an azure
     swordman.
   myCompetenceType: 0
@@ -26,6 +29,7 @@ MonoBehaviour:
   MaxDegats: 60
   InitiativeDegats: 0
   AppliedStates: []
+  ModelStates: []
   "Pouss\xE9e": 0
   SelectableCases:
   - {x: 0, y: 1}
@@ -35,3 +39,5 @@ MonoBehaviour:
   - {x: 1, y: 0}
   Logo: {fileID: 21300000, guid: aa4e035c96740484b8f32e40d92927be, type: 3}
   TriggerName: Attack
+  BaseOpportunity: 3
+  PatternIsDirectionnal: 1

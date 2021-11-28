@@ -6,6 +6,8 @@ using System.Linq;
 
 public class InitiativeDisplayer : Singleton<InitiativeDisplayer>
 {
+    TurnManager TM;
+
     Animator myAnimator;
     GridLayoutGroup myGridGroup;
     public AnimationCurve ScalingByNumber;
@@ -32,11 +34,12 @@ public class InitiativeDisplayer : Singleton<InitiativeDisplayer>
             Destroy(this);
         }
 
+        TM = TurnManager.Instance;
         myGridGroup = GetComponent<GridLayoutGroup>();
-        myAnimator = GetComponent<Animator>();
+        myAnimator = transform.parent.GetComponent<Animator>();
     }
 
-    public void UpdateCadres()
+    public void UpdateCadres(FightEntity Playing)
     {
         for (int i = 0; i < allCadres.Count; i++)
         {
@@ -53,9 +56,21 @@ public class InitiativeDisplayer : Singleton<InitiativeDisplayer>
 
         allCadres = InitToArray.OrderBy(m => m.TurnsFromPlay).ThenBy(m => m.PlaceInTurns()).ToList();
 
-        for (int i = 0; i < allCadres.Count; i++)
+        int indexPosition = 0;
+
+        if (Playing)
         {
-            allCadres[i].transform.SetSiblingIndex(i);
+            Playing.myInitiativeCadre.transform.SetSiblingIndex(indexPosition);
+            indexPosition++;
+        }
+
+        foreach (InitiativeCadre cadre in allCadres)
+        {
+            if(Playing != cadre.myEntity)
+            {
+                cadre.transform.SetSiblingIndex(indexPosition);
+                indexPosition++;
+            }
         }
     }
 
@@ -64,7 +79,6 @@ public class InitiativeDisplayer : Singleton<InitiativeDisplayer>
         myGridGroup.cellSize = new Vector2(ScalingByNumber.Evaluate(allCadres.Count), myGridGroup.cellSize.y);
     }
 
-    // Update is called once per frame
     public void GetACadre(FightEntity newEntity)
     {
         GameObject theCadre = Instantiate (Resources.Load<GameObject>("UI/Initiative_aCadre"), transform);

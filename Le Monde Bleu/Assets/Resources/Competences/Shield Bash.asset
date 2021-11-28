@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Shield Bash
   m_EditorClassIdentifier: 
   Name: Shield Bash
+  myFighter: {fileID: 0}
+  LinkedWeapon: {fileID: 0}
+  WeaponFilter: -1
   Description: Sometimes, the farest is the ennemy, the better it is.
   myCompetenceType: 2
   EnergyCost: 3
@@ -25,6 +28,7 @@ MonoBehaviour:
   MaxDegats: 0
   InitiativeDegats: 0
   AppliedStates: []
+  ModelStates: []
   "Pouss\xE9e": 2
   SelectableCases:
   - {x: 0, y: 1}
@@ -32,3 +36,5 @@ MonoBehaviour:
   - {x: 0, y: 0}
   Logo: {fileID: 0}
   TriggerName: ShieldBash
+  BaseOpportunity: 0
+  PatternIsDirectionnal: 0

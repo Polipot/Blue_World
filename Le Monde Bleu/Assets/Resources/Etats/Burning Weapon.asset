@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Burning Weapon
   m_EditorClassIdentifier: 
   ShowConditions: 0
-  WeaponFilter: 10
+  WeaponFilter: -1
   myClass: 2
   Dependance: 
   myStateType: 24

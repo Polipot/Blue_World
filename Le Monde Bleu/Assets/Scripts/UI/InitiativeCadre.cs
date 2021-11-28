@@ -9,6 +9,7 @@ public class InitiativeCadre : MonoBehaviour
     [Header("External")]
     InitiativeDisplayer ID;
     TurnManager TM;
+    PlayerManager PM;
 
     [HideInInspector]public FightEntity myEntity;
     [HideInInspector]public FightNature myNature;
@@ -20,6 +21,10 @@ public class InitiativeCadre : MonoBehaviour
     Image Portrait;
     Image Cadre;
     Image Fond2;
+    Image FondArmor;
+    Image Armor;
+    Image FondHealth;
+    Image Health;
 
     aTip myTip;
     
@@ -33,7 +38,11 @@ public class InitiativeCadre : MonoBehaviour
         Fond = transform.GetChild(1).GetComponent<Image>();
         Portrait = transform.GetChild(2).GetComponent<Image>();
         Cadre = transform.GetChild(3).GetComponent<Image>();
-        Fond2 = transform.GetChild(4).GetComponent<Image>();       
+        Fond2 = transform.GetChild(4).GetComponent<Image>();
+        FondArmor = transform.GetChild(7).GetComponent<Image>();
+        FondHealth = transform.GetChild(8).GetComponent<Image>();
+        Armor = FondArmor.transform.GetChild(0).GetComponent<Image>();
+        Health = FondHealth.transform.GetChild(0).GetComponent<Image>();
         Pourcentage = transform.GetChild(5).GetComponent<TextMeshProUGUI>();
         myTip = Portrait.GetComponent<aTip>();
         CadrePlaying = transform.GetChild(6).gameObject;
@@ -42,10 +51,10 @@ public class InitiativeCadre : MonoBehaviour
 
         ID = InitiativeDisplayer.Instance;
         TM = TurnManager.Instance;
+        PM = PlayerManager.Instance;
 
         if (myNewEntity)
         {
-
             myEntity = myNewEntity;
             myEntity.myInitiativeCadre = this;
             string RichTextColor = "white";
@@ -76,7 +85,9 @@ public class InitiativeCadre : MonoBehaviour
 
             Portrait.sprite = myEntity.PortraitZoom;
             Pourcentage.text = (myEntity.ActualInitiative / 10).ToString() + "%";
-            myTip.ToShow = "<color="+RichTextColor+">" + myNewEntity.Nom + "</color> , " + myEntity.myClasse.ToString();
+            myTip.ToShow = "<color=" + RichTextColor + ">" + myNewEntity.Nom + "</color> , " + myEntity.myClasse.ToString();
+
+            UpdateBars();
         }
 
         else if(myNewNature)
@@ -87,10 +98,39 @@ public class InitiativeCadre : MonoBehaviour
             Fond.color = ID.Fond_Neutre;
             Cadre.color = ID.Cadre_Neutre;
             myTip.ToShow = "Terrain Evolution";
+
+            Armor.gameObject.SetActive(false);
+            FondArmor.gameObject.SetActive(false);
+            Health.gameObject.SetActive(false);
+            FondHealth.gameObject.SetActive(false);
         }
 
         if(TM.myFS != FightSituation.Deployement)
             ID.UpdateGridConstraint();
+    }
+
+    private void Update()
+    {
+        if((myEntity && myEntity.IsPlaying) || (myNature && myNature.isPlaying))
+        {
+            if(transform.localScale.x < 0.4f)
+            {
+                float distanceBetween = 0.4f - transform.localScale.x;
+                transform.localScale += new Vector3(distanceBetween / 20, distanceBetween / 20, distanceBetween / 20);
+                if (0.4f - transform.localScale.x < 0.001f)
+                    transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+            }
+        }
+        else
+        {
+            if(transform.localScale.x > 0.3f)
+            {
+                float distanceBetween = transform.localScale.x - 0.3f;
+                transform.localScale -= new Vector3(distanceBetween / 20, distanceBetween / 20, distanceBetween / 20);
+                if (transform.localScale.x - 0.3f < 0.001f)
+                    transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            }
+        }
     }
 
     public void Remove()
@@ -113,11 +153,18 @@ public class InitiativeCadre : MonoBehaviour
     {
         if (myEntity)
         {
-            Pourcentage.text = (Mathf.Clamp(myEntity.ActualInitiative / 10, 0, 100)).ToString() + "%";
+            
             if (myEntity.IsPlaying)
+            {
+                Pourcentage.text = "Playing";
                 CadrePlaying.SetActive(true);
+            }
             else
+            {
+                Pourcentage.text = (Mathf.Clamp(myEntity.ActualInitiative / 10, 0, 100)).ToString() + "%";
                 CadrePlaying.SetActive(false);
+            }
+                
         }
         else
         {
@@ -148,6 +195,12 @@ public class InitiativeCadre : MonoBehaviour
         return myIndex;
     }
 
+    public void Select()
+    {
+        if (myEntity)
+            PM.ForceSelectSecondary(myEntity);
+    }
+
     #region Deduced Elements
 
     public int myMaxInitiative()
@@ -172,6 +225,24 @@ public class InitiativeCadre : MonoBehaviour
             return myEntity.ActualInitiative;
         else
             return myNature.ActualInitiative;
+    }
+
+    #endregion
+
+    #region Bars
+
+    public void UpdateBars()
+    {
+        if(myEntity.maxArmor == 0)
+            Armor.fillAmount = 0;
+        else
+        {
+            float myArmor = ((float)myEntity.Armor / (float)myEntity.maxArmor);
+            Armor.fillAmount = myArmor;
+        }
+
+        float myHealth = ((float)myEntity.Hp / (float)myEntity.MaxHp);
+        Health.fillAmount = myHealth;
     }
 
     #endregion

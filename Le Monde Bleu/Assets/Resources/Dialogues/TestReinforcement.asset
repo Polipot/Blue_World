@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4d2d54d104788418fc4cdf92acbc49, type: 3}
   m_Name: TestReinforcement
   m_EditorClassIdentifier: 
+  myConditionCrypted: 
+  myCondition: 0
+  mySubject: {fileID: 0}
+  myMinLife: 0
   DialogueNames:
   - "H\xE9l\xE8ne Acervus"
   - Forest Brigand
   DialogueLines:
-  - Hold on! We're coming!
+  - Hold the line! We're coming!
   - You will not leave this place alive

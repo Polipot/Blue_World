@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4d2d54d104788418fc4cdf92acbc49, type: 3}
   m_Name: TestDuring
   m_EditorClassIdentifier: 
-  myConditionCrypted: Subject_Porvas Marte|LowLife_100
-  myCondition: 0
-  mySubjectName: 
+  myConditionCrypted: Subject_Valente Scerkeo|LowLife_150
+  myCondition: 1
   mySubject: {fileID: 0}
-  myMinLife: 0
+  myMinLife: 150
   DialogueNames:
-  - Porvas Marte
+  - Valente Scerkeo
   DialogueLines:
-  - Hey, I need help, like, right now.
+  - You think you're funny?! Laugh while you still can!

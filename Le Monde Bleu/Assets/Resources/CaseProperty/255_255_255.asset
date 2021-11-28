@@ -15,5 +15,8 @@ MonoBehaviour:
   CaseName: Wall
   isWalkable: 0
   isBlockingVision: 1
-  CaseTexture: {fileID: 0}
+  CaseTexture:
+  - {fileID: 0}
   myCaseType: 0
+  ConstantEffect: []
+  Burned: {fileID: 0}

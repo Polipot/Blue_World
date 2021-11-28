@@ -15,7 +15,10 @@ MonoBehaviour:
   CaseName: Water
   isWalkable: 1
   isBlockingVision: 0
-  CaseTexture: {fileID: 21300000, guid: dcdbc94204f831149b1ae9bbc41156af, type: 3}
+  CaseTexture:
+  - {fileID: 21300000, guid: e3e8aee5fdd0c834fab688752385bd48, type: 3}
+  - {fileID: 21300000, guid: c4e40153e7cfb2c4cb234c6e0751a087, type: 3}
   myCaseType: 0
   ConstantEffect:
   - Water(Case)
+  Burned: {fileID: 0}

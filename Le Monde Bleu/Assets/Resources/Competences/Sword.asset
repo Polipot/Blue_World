@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Sword
   myFighter: {fileID: 0}
+  LinkedWeapon: {fileID: 0}
+  WeaponFilter: -1
   Description: Maybe the most deadly attack during wars, its simplicity makes its
     strenght.
   myCompetenceType: 0
@@ -27,6 +29,7 @@ MonoBehaviour:
   MaxDegats: 50
   InitiativeDegats: 0
   AppliedStates: []
+  ModelStates: []
   "Pouss\xE9e": 0
   SelectableCases:
   - {x: 0, y: 1}
@@ -34,3 +37,5 @@ MonoBehaviour:
   - {x: 0, y: 0}
   Logo: {fileID: 0}
   TriggerName: Attack
+  BaseOpportunity: 5
+  PatternIsDirectionnal: 0

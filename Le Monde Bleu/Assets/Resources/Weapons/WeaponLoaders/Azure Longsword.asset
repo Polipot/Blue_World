@@ -24,3 +24,10 @@ MonoBehaviour:
   Nom: Azure Longsword
   Description: A legendary weapon, rare enought to make some persons consider this
     sword's owner as a choosen one.
+  BonusCounter: 0
+  BonusTranchant: 0
+  BonusPerforant: 0
+  BonusMagique: 0
+  BonusChoc: 0
+  BonusFrappeHeroique: 0
+  EnergyGain: 0

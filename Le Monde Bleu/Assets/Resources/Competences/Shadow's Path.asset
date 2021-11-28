@@ -13,18 +13,22 @@ MonoBehaviour:
   m_Name: Shadow's Path
   m_EditorClassIdentifier: 
   Name: Shadow's Path
+  myFighter: {fileID: 0}
+  LinkedWeapon: {fileID: 0}
+  WeaponFilter: -1
   Description: He is not moving in the same plan as the others, that's for sure.
   myCompetenceType: 1
   EnergyCost: 4
   myAttaqueType: 0
   Anti_Perso: 1
   Anti_Ground: 0
-  Vision_Affected: 1
+  Vision_Affected: 0
   TargetingAllies: 0
   MinDegats: 0
   MaxDegats: 0
   InitiativeDegats: 0
   AppliedStates: []
+  ModelStates: []
   "Pouss\xE9e": 0
   SelectableCases:
   - {x: -1, y: 1}
@@ -41,3 +45,5 @@ MonoBehaviour:
   - {x: 0, y: 0}
   Logo: {fileID: 0}
   TriggerName: Teleport
+  BaseOpportunity: 0
+  PatternIsDirectionnal: 0

@@ -5,8 +5,10 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class TipsShower : MonoBehaviour
+public class TipsShower : Singleton<TipsShower>
 {
+    FightCamera FC;
+
     aTip Actual;
     TextMeshProUGUI myText;
     GameObject Accroche;
@@ -16,6 +18,11 @@ public class TipsShower : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != this)
+            Destroy(this);
+
+        FC = FightCamera.Instance;
+
         Accroche = transform.GetChild(0).gameObject;
         TipRectTransform = Accroche.transform.GetChild(0).GetComponent<RectTransform>();
         myText = TipRectTransform.GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -42,17 +49,24 @@ public class TipsShower : MonoBehaviour
                 {
                     if (go.gameObject.GetComponent<aTip>() != null && go.gameObject.GetComponent<aTip>() == Actual)
                     {
-                        // Oui
+                        
                     }
                     else if (go.gameObject.GetComponent<aTip>() != null && go.gameObject.GetComponent<aTip>() != Actual)
                     {
                         Actual = go.gameObject.GetComponent<aTip>();
                         Changed = true;
+
+                        InitiativeCadre Cadre = Actual.gameObject.GetComponentInParent<InitiativeCadre>();
+                        if (Cadre && Cadre.myEntity)
+                            FC.shordLivedTarget = Cadre.myEntity.transform;
                     }
                     else
                     {
                         Actual = null;
                         Changed = true;
+
+                        if (FC.shordLivedTarget)
+                            FC.shordLivedTarget = null;
                     }
                 }
             }
@@ -60,6 +74,9 @@ public class TipsShower : MonoBehaviour
             {
                 Actual = null;
                 Changed = true;
+
+                if (FC.shordLivedTarget)
+                    FC.shordLivedTarget = null;
             }
         }
 
@@ -67,6 +84,9 @@ public class TipsShower : MonoBehaviour
         {
             Actual = null;
             Changed = true;
+
+            if (FC.shordLivedTarget)
+                FC.shordLivedTarget = null;
         }
 
         if(Changed)
@@ -101,6 +121,52 @@ public class TipsShower : MonoBehaviour
         {
             if (Accroche.activeSelf)
                 Accroche.SetActive(false);
+        }
+    }
+
+    public string NameFromWeaponType(WeaponType myWeaponType)
+    {
+        switch (myWeaponType)
+        {
+            case WeaponType.None:
+                return "";
+            case WeaponType.Everything:
+                return "";
+            case WeaponType.AttackMeleeWeapon:
+                return "melee weapon";
+            case WeaponType.AttackRangedWeapon:
+                return "ranged weapon";
+            case WeaponType.HandCombat:
+                return "handed combat style";
+            case WeaponType.DefenseWeapon:
+                return "defense equipement";
+            case WeaponType.SpellCaster:
+                return "magic object";
+            default:
+                return "";
+        }
+    }
+
+    public string NameFromWeaponType(int myWeaponType)
+    {
+        switch (myWeaponType)
+        {
+            case (int)WeaponType.None:
+                return "";
+            case (int)WeaponType.Everything:
+                return "";
+            case (int)WeaponType.AttackMeleeWeapon:
+                return "melee weapon";
+            case (int)WeaponType.AttackRangedWeapon:
+                return "ranged weapon";
+            case (int)WeaponType.HandCombat:
+                return "handed combat style";
+            case (int)WeaponType.DefenseWeapon:
+                return "defense equipement";
+            case (int)WeaponType.SpellCaster:
+                return "magic object";
+            default:
+                return "";
         }
     }
 }

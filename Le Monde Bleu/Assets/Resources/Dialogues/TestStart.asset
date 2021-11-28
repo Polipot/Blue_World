@@ -12,19 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4d2d54d104788418fc4cdf92acbc49, type: 3}
   m_Name: TestStart
   m_EditorClassIdentifier: 
+  myConditionCrypted: 
+  myCondition: 0
+  mySubject: {fileID: 0}
+  myMinLife: 0
   DialogueNames:
-  - Porvas Marte
-  - "H\xE9l\xE8ne Acervus"
-  - Wyllis Heyno
+  - Valente Scerkeo
   - Naarion
   - Pirenion
   - The Carcass
-  - Champion
   DialogueLines:
-  - I've dreamed about this all the day!
-  - You are a strange man, you know that?
-  - Don't hurt yourselves, this is just a friendly fight.
-  - ...Until we decide it's not.
-  - I don't need weapon to surpass all of you.
-  - You can't surpass something you can't see, fish.
-  - What am I doing here?
+  - At last, some action! Prepare to be ripped to pieces!
+  - You're no match for us, Brigant scum.
+  - Don't underestimate them, they've killed many travellers.
+  - I'd like to see that, they really look harmless.

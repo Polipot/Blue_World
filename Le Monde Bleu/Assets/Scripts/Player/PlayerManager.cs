@@ -70,10 +70,6 @@ public class PlayerManager : Singleton<PlayerManager>
                     }
                 }
             }
-            else
-            {
-                
-            }
         }
         else
         {
@@ -249,7 +245,13 @@ public class PlayerManager : Singleton<PlayerManager>
 
             if (hit.collider != null && hit.collider.GetComponent<Case>() != null && actualEntity.mySituation == Situation.ChooseAttack && hit.collider.GetComponent<Case>().Walkable && hit.collider.GetComponent<Case>() == AttackCenterCase)
             {
-                
+                if (AttackPattern.Count > 0)
+                {
+                    for (int i = 0; i < AttackPattern.Count; i++)
+                    {
+                        AttackPattern[i].HighlightAttackCase(false, true);
+                    }
+                }
                 actualEntity.BeginAttack(AttackPattern, AttackCenterCase);
                 AttackPattern = new List<Case>();
                 AttackCenterCase = null;
@@ -274,26 +276,26 @@ public class PlayerManager : Singleton<PlayerManager>
             if (newCase != null && AttackCenterCase == null && newCase.Attackable)
             {
                 AttackCenterCase = newCase;
-                AttackCenterCase.HighlightAttackCase(true);
+                AttackCenterCase.HighlightAttackCase(true, true);
                 ActualizeAttackPattern();
             }
             else if (newCase != null && AttackCenterCase != null && AttackCenterCase != newCase && newCase.Attackable)
             {
-                AttackCenterCase.HighlightAttackCase(false);
+                AttackCenterCase.HighlightAttackCase(false, true);
                 AttackCenterCase = newCase;
-                AttackCenterCase.HighlightAttackCase(true);
+                AttackCenterCase.HighlightAttackCase(true, true);
                 ActualizeAttackPattern();
             }
             else if (newCase != null && AttackCenterCase != null && !newCase.Attackable)
             {
-                AttackCenterCase.HighlightAttackCase(false);
+                AttackCenterCase.HighlightAttackCase(false, true);
                 AttackCenterCase = null;
                 ActualizeAttackPattern();
             }
         }
         else if (AttackCenterCase != null)
         {
-            AttackCenterCase.HighlightAttackCase(false);
+            AttackCenterCase.HighlightAttackCase(false, true);
             AttackCenterCase = null;
             ActualizeAttackPattern();
         }
@@ -305,7 +307,7 @@ public class PlayerManager : Singleton<PlayerManager>
         {
             for (int i = 0; i < AttackPattern.Count; i++)
             {
-                AttackPattern[i].HighlightAttackCase(false);
+                AttackPattern[i].HighlightAttackCase(false, true);
             }
         }
 
@@ -348,7 +350,7 @@ public class PlayerManager : Singleton<PlayerManager>
                     {
                         Case newCase = myNode.myCase;
                         AttackPattern.Add(newCase);
-                        newCase.HighlightAttackCase(true);
+                        newCase.HighlightAttackCase(true, true);
                     }
                 }
             }
@@ -364,7 +366,7 @@ public class PlayerManager : Singleton<PlayerManager>
 
     void SelectSecondary(Case myCase)
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             if (myCase.EntityOnTop && (TM.myFS == FightSituation.Fight || myCase.EntityOnTop.myAlignement == Alignement.Membre))
                 selectedEntity = myCase.EntityOnTop;
@@ -379,6 +381,12 @@ public class PlayerManager : Singleton<PlayerManager>
                 selectedEntity = null;
             }
         }
+    }
+
+    public void ForceSelectSecondary(FightEntity newFightEntity)
+    {
+        selectedEntity = newFightEntity;
+        selectedEntity.OpenFollowingBar();
     }
 
     public bool AreCasesNeighbours(Case Case1, Case Case2)

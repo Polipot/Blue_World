@@ -14,11 +14,12 @@ public class TurnManager : Singleton<TurnManager>
     InitiativeDisplayer ID;
 
     [Header("Global")]
-    public FightSituation myFS;
+    public List<string> FightersCodes;
+    [HideInInspector] public FightSituation myFS;
     public List<FightEntity> activeFighters;
     [Space]
-    public int TurnIndex;
-    public bool NeedsNewTurn;
+    [HideInInspector] public int TurnIndex;
+    [HideInInspector] public bool NeedsNewTurn;
 
     [Header("AutoDeploying")]
     float TempsBeforeAD;
@@ -37,6 +38,9 @@ public class TurnManager : Singleton<TurnManager>
     public aDialogue EndingDialogue;
     public List<aDialogue> OthersDialogues;
 
+    [Header("PlayingIcon")]
+    [SerializeField] private PlayingIcon myPlayingIcon;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -45,14 +49,16 @@ public class TurnManager : Singleton<TurnManager>
             Destroy(this);
         }
 
+        foreach(string CodeName in FightersCodes)
+        {
+            SetNewBody(CodeName);
+        }
+
         ID = InitiativeDisplayer.Instance;
         FN = FightNature.Instance;
         CM = CaseManager.Instance;
         UISE = UIStartEnd.Instance;
         DM = DialogueManager.Instance;
-
-        for (int i = 0; i < OthersDialogues.Count; i++)
-            OthersDialogues[i].myConditionTranslated();
     }
 
     void FixedUpdate()
@@ -112,12 +118,14 @@ public class TurnManager : Singleton<TurnManager>
                     }
                 }
 
+                FightEntity myNewTurnOwner = null;
                 if (Found)
                 {
                     if (Index != activeFighters.Count)
                     {
                         TurnIndex = Index;
                         activeFighters[TurnIndex].ActualInitiative = maxSurplus;
+                        myNewTurnOwner = activeFighters[TurnIndex];
                         NewTurn();
                     }
                     else
@@ -136,7 +144,7 @@ public class TurnManager : Singleton<TurnManager>
                     FN.ActualInitiative += FN.InitiativeSpeed;
                 }
 
-                ID.UpdateCadres();
+                ID.UpdateCadres(myNewTurnOwner);
             }
         }
 
@@ -171,6 +179,12 @@ public class TurnManager : Singleton<TurnManager>
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (Time.timeScale == 0) Time.timeScale = 1;
+            else if (Time.timeScale == 1) Time.timeScale = 0;
+        }
+
         if (Input.GetKeyDown(KeyCode.Space) && myFS == FightSituation.Deployement)
         {
             CM.UnmarkDeployment();
@@ -211,6 +225,9 @@ public class TurnManager : Singleton<TurnManager>
         }
 
         ID.UpdateGridConstraint();
+
+        for (int i = 0; i < OthersDialogues.Count; i++)
+            OthersDialogues[i].myConditionTranslated();
     }
 
     public void ForceReinforcements() => myFS = FightSituation.Reinforcement;
@@ -232,11 +249,13 @@ public class TurnManager : Singleton<TurnManager>
                 }
             }
             activeFighters[TurnIndex].BeforeTurn();
+            myPlayingIcon.ChangePlaying(activeFighters[TurnIndex]);
         }
 
         else
         {
             FN.TurnStart();
+            myPlayingIcon.ChangePlaying();
         }       
     }
 
@@ -247,6 +266,7 @@ public class TurnManager : Singleton<TurnManager>
             activeFighters[i].GenerateBlockZone(false);
         }
         NeedsNewTurn = true;
+        myPlayingIcon.ChangePlaying();
     }
 
     public void RemoveAnEntity(FightEntity FE)
@@ -257,6 +277,7 @@ public class TurnManager : Singleton<TurnManager>
         {
             if(activeFighters[i] == FE)
             {
+                myPlayingIcon.ChangePlaying();
                 activeFighters.RemoveAt(i);
                 theIndex = i;
                 break;
@@ -365,5 +386,29 @@ public class TurnManager : Singleton<TurnManager>
         }
 
         return toReturn;
+    }
+
+    #region Get Fight Entities by alignement
+
+    public List<FightEntity> GetAlignedEntities(FightEntity Perspective, bool GetAllies, bool SelfIncluded)
+    {
+        List<FightEntity> toReturn = new List<FightEntity>();
+
+        for(int i = 0; i < activeFighters.Count; i++)
+        {
+            bool SameAlignement = (activeFighters[i].myAlignement == Alignement.Ennemi && Perspective.myAlignement == Alignement.Ennemi) || (activeFighters[i].myAlignement != Alignement.Ennemi && Perspective.myAlignement != Alignement.Ennemi);
+            if (SameAlignement == GetAllies && (activeFighters[i] != Perspective || SelfIncluded))
+                toReturn.Add(activeFighters[i]);
+        }
+
+        return toReturn;
+    }
+
+    #endregion
+
+    void SetNewBody(string FighterCode)
+    {
+        GameObject Body = Instantiate(Resources.Load<GameObject>("Entities_Prefab/Prefab_Fighter"));
+        Body.GetComponent<FightEntity>().Activation(FighterCode);
     }
 }

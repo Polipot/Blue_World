@@ -18,7 +18,7 @@ public class TheGrid : Singleton<TheGrid>
     public Node[,] grid;
 
     float nodeDiameter;
-    int gridSizeX, gridSizeY;
+    public int gridSizeX, gridSizeY;
 
     void Awake()
     {
@@ -85,9 +85,14 @@ public class TheGrid : Singleton<TheGrid>
         }
     }
 
+    List<Node> neighbours = new List<Node>();
+    Node theNode = null;
+    int checkX = 0;
+    int checkY = 0;
+
     public List<Node> GetNeighbours(Node node, bool NeedToBeUnocupied = false)
     {
-        List<Node> neighbours = new List<Node>();
+        neighbours.Clear();
 
         for (int x = -1; x <= 1; x++)
         {
@@ -96,12 +101,12 @@ public class TheGrid : Singleton<TheGrid>
                 if (x != 0 && y != 0)
                     continue;
 
-                int checkX = node.gridX + x;
-                int checkY = node.gridY + y;
+                checkX = node.gridX + x;
+                checkY = node.gridY + y;
 
                 if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
                 {
-                    Node theNode = grid[checkX, checkY];
+                    theNode = grid[checkX, checkY];
                     if(theNode.walkable && (!NeedToBeUnocupied || theNode.myCase.EntityOnTop == null))
                         neighbours.Add(grid[checkX, checkY]);
                 }
@@ -184,5 +189,4 @@ public class TheGrid : Singleton<TheGrid>
         toRound /= 1000;
         return toRound;
     }
-
 }

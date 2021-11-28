@@ -27,6 +27,6 @@ MonoBehaviour:
   BonusTranchant: 0
   BonusPerforant: 0
   BonusMagique: 0
-  BonusChoc: 15
+  BonusChoc: 0
   BonusFrappeHeroique: 0
   EnergyGain: 0

@@ -8,9 +8,13 @@ public enum AttaqueType { None, Tranchant, Perforant, Magique, Choc };
 [CreateAssetMenu]
 public class aCompetence : ScriptableObject
 {
+    TipsShower TS;
+
     [Header("Global")]
     public string Name;
     [HideInInspector]public FightEntity myFighter;
+    public aWeapon LinkedWeapon;
+    public WeaponType WeaponFilter;
     [TextArea(10, 30)]
     public string Description;
     public CompetenceType myCompetenceType;
@@ -30,6 +34,7 @@ public class aCompetence : ScriptableObject
     public float InitiativeDegats;
     [Header("Etats")]
     public List<string> AppliedStates;
+    public List<aStateModel> ModelStates;
     [Header("Poussée")]
     public int Poussée;
     [Header("Pattern")]
@@ -39,6 +44,10 @@ public class aCompetence : ScriptableObject
     public Sprite Logo;
     [Header("Animations")]
     public string TriggerName;
+    [Space]
+    [Header("Infos pour l'IA"), Range(0,10)]
+    public int BaseOpportunity;
+    public bool PatternIsDirectionnal;
 
     public void AddAppliedState(aState newState)
     {
@@ -58,6 +67,9 @@ public class aCompetence : ScriptableObject
 
     public string TipToShow()
     {
+        if (!TS)
+            TS = TipsShower.Instance;
+
         string toShow = "<b>" + Name + "</b>" + "\n";
 
         toShow += "<i>" + Description + "</i>" + "\n - - - - -\n";
@@ -68,16 +80,16 @@ public class aCompetence : ScriptableObject
             case AttaqueType.None:
                 break;
             case AttaqueType.Tranchant:
-                DamageType = "Sharp";
+                DamageType = " <sprite=5>Sharp";
                 break;
             case AttaqueType.Perforant:
-                DamageType = "Piercing";
+                DamageType = " <sprite=7>Piercing";
                 break;
             case AttaqueType.Magique:
-                DamageType = "Magic";
+                DamageType = " <sprite=9>Magic";
                 break;
             case AttaqueType.Choc:
-                DamageType = "Impact";
+                DamageType = " <sprite=6>Impact";
                 break;
             default:
                 break;
@@ -104,11 +116,30 @@ public class aCompetence : ScriptableObject
         }
 
         if(InitiativeDegats != 0)
-            toShow += "\n<color=green>Inflicts -" + InitiativeDegats + " Initiative</color>";
+            toShow += "\n<color=green>Inflicts -" + InitiativeDegats + "% Initiative</color>";
 
         for (int i = 0; i < AppliedStates.Count; i++)
         {
             toShow += "\n<color=green>Applies <b>" + AppliedStates[i] + "</b></color>";
+            if(WeaponFilter != WeaponType.Everything)
+            {
+                toShow += "\n<color=yellow>Appliable on </color>";
+                WeaponType myWeaponType = WeaponFilter;
+                List<string> AllowedTypes = new List<string>();
+
+                foreach (WeaponType value in WeaponType.GetValues(typeof(WeaponType)))
+                    if (myWeaponType.HasFlag(value) && value != WeaponType.None)
+                        AllowedTypes.Add(TS.NameFromWeaponType(value));
+
+                for(int a = 0; a < AllowedTypes.Count; a++)
+                {
+                    if (a != 0 && a + 1 < AllowedTypes.Count)
+                        toShow += "<color=yellow>, </color>";
+                    else if (a != 0 && a + 1 >= AllowedTypes.Count)
+                        toShow += "<color=yellow> and </color>";
+                    toShow += "<color=yellow>" + AllowedTypes[i] + "</color>";
+                }
+            }
         }
 
         toShow += "\n\n<color=red>Costs " + EnergyCost + " Energy</color>";

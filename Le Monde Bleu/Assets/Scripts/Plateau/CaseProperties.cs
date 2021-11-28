@@ -17,7 +17,7 @@ public class CaseProperties : ScriptableObject
     [Space]
     public bool isWalkable;
     public bool isBlockingVision;
-    public Sprite CaseTexture;
+    public List<Sprite> CaseTexture;
     [Space]
     public CaseTypes myCaseType;
     [Space]

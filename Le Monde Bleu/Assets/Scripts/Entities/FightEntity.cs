@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-
+using System.IO;
 public enum Alignement { Membre, Allié, Ennemi }
 public enum Situation { None, BeforeTurn , ChooseMove, Move, ChooseAttack, Attack, Blocked }
 public enum Classe { Hero, Soldier }
@@ -35,6 +35,10 @@ public class FightEntity : MonoBehaviour
 
     [Header("Global")]
     public string Nom;
+    [Tooltip("Only for non-unique characters!")]
+    public int SaveIndex;
+    [Tooltip("Only for non-unique heroes!")]
+    public string HeroType;
     [TextArea(10,30)]
     public string Description;
     public Classe myClasse;
@@ -71,6 +75,8 @@ public class FightEntity : MonoBehaviour
     public Sprite PortraitZoom;
     [HideInInspector]
     public InitiativeCadre myInitiativeCadre;
+    [HideInInspector]
+    public FollowingBar myFollowingBar;
 
     [Header("Statistiques")]
     public int Hp;
@@ -125,8 +131,59 @@ public class FightEntity : MonoBehaviour
     public aCompetence UsedCompetence;
     public List<Case> AttackedPattern;
 
-    void Awake()
+    public void Activation(string NameCode)
     {
+        #region LoadCharacter
+        AFighterSave mySave = LoadSavedCharacter(NameCode);
+
+        Nom = mySave.Nom;
+        HeroType = mySave.HeroType;
+        Description = mySave.Description;
+        myClasse = mySave.myClasse;
+        myAlignement = mySave.myAlignement;
+
+        // Current Weapons
+
+        FirstWeaponName = mySave.FirstWeaponName;
+        SideWeaponName = mySave.SideWeaponName;
+
+
+        // Stats & Comps
+
+        Hp = mySave.Hp;
+        MaxHp = mySave.MaxHp;
+        maxArmor = mySave.maxArmor;
+
+        Resistance = mySave.Resistance;
+        Parade = mySave.Parade;
+        Esquive = mySave.Esquive;
+
+        Energy = 5;
+        MaxEnergy = mySave.MaxEnergy;
+        EnergyGain = mySave.EnergyGain;
+
+        Tranchant = mySave.Tranchant;
+        Perforant = mySave.Perforant;
+        Magique = mySave.Magique;
+        Choc = mySave.Choc;
+        FrappeHeroique = mySave.FrappeHeroique;
+
+        Speed = mySave.Speed;
+        InitiativeSpeed = mySave.InitiativeSpeed;
+
+        myCompetences.Clear();
+        for(int i = 0; i < mySave.myNativeCompetences.Count; i++)
+        {
+            myCompetences.Add(Resources.Load<aCompetence>("Competences/" + mySave.myNativeCompetences[i]));
+        }
+
+        Portrait = Resources.Load<Sprite>(mySave.Path + "/Portrait");
+        PortraitZoom = Resources.Load<Sprite>(mySave.Path + "/Portrait_Zoom");
+
+        LoadSkin(mySave);
+
+        #endregion
+
         PM = PlayerManager.Instance;
         theGrid = TheGrid.Instance;
         TM = TurnManager.Instance;
@@ -136,8 +193,11 @@ public class FightEntity : MonoBehaviour
         CUI = CompétencesUI.Instance;
         DM = DialogueManager.Instance;
         ID = InitiativeDisplayer.Instance;
-        if(!TM.Reinforcements.Contains(this))
+        if (!TM.Reinforcements.Contains(this))
+        {
             ID.GetACadre(this);
+            GetAFollowingBar();
+        }
 
         myWeaponFX = GetComponentInChildren<WeaponFX>();
 
@@ -187,9 +247,21 @@ public class FightEntity : MonoBehaviour
 
     #region Loads
 
+    void LoadSkin(AFighterSave mySave)
+    {
+        SpriteRenderer Corps = transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>(); Corps.sprite = Resources.Load<Sprite>(mySave.Path + "/Corps");
+        SpriteRenderer Tete = Corps.transform.GetChild(0).GetComponent<SpriteRenderer>(); Tete.sprite = Resources.Load<Sprite>(mySave.Path + "/Tête");
+        SpriteRenderer Epaule1 = Corps.transform.GetChild(1).GetComponent<SpriteRenderer>(); Epaule1.sprite = Resources.Load<Sprite>(mySave.Path + "/Epaule");
+        SpriteRenderer Bras1 = Epaule1.transform.GetChild(0).GetComponent<SpriteRenderer>(); Bras1.sprite = Resources.Load<Sprite>(mySave.Path + "/Bras");
+        SpriteRenderer Main1 = Bras1.transform.GetChild(0).GetComponent<SpriteRenderer>(); Main1.sprite = Resources.Load<Sprite>(mySave.Path + "/Main");
+        SpriteRenderer Epaule2 = Corps.transform.GetChild(2).GetComponent<SpriteRenderer>(); Epaule2.sprite = Resources.Load<Sprite>(mySave.Path + "/Epaule");
+        SpriteRenderer Bras2 = Epaule2.transform.GetChild(0).GetComponent<SpriteRenderer>(); Bras2.sprite = Resources.Load<Sprite>(mySave.Path + "/Bras");
+        SpriteRenderer Main2 = Bras2.transform.GetChild(0).GetComponent<SpriteRenderer>(); Main2.sprite = Resources.Load<Sprite>(mySave.Path + "/Main");
+    }
     void LoadWeapons()
     {
         FirstWeaponStats = Resources.Load<aWeapon>("Weapons/WeaponLoaders/" + FirstWeaponName);
+
         ApplyWeaponBonusMalus(FirstWeaponStats);
         if (FirstWeaponStats.myAnimator != null)
         {
@@ -202,11 +274,13 @@ public class FightEntity : MonoBehaviour
         BlockWeapon = FirstWeaponStats;
 
         List <aCompetence> newComps = myCompetences.Union(FirstWeaponStats.LinkedComps).ToList();
+        
         myCompetences = newComps;
 
         if (SideWeaponName != "")
         {
             SideWeaponStats = Resources.Load<aWeapon>("Weapons/WeaponLoaders/" + SideWeaponName);
+
             ApplyWeaponBonusMalus(SideWeaponStats);
             myAnimator.runtimeAnimatorController = SideWeaponStats.myAnimator;
 
@@ -219,6 +293,10 @@ public class FightEntity : MonoBehaviour
         for (int i = 0; i < myCompetences.Count; i++)
         {
             aCompetence myNewComp = CloneOfComp(myCompetences[i]);
+            if (FirstWeaponStats && FirstWeaponStats.LinkedComps.Contains(myCompetences[i]))
+                myNewComp.LinkedWeapon = FirstWeaponStats;
+            else if (SideWeaponStats && SideWeaponStats.LinkedComps.Contains(myCompetences[i]))
+                myNewComp.LinkedWeapon = SideWeaponStats;
             myCompetences[i] = myNewComp;
         }
 
@@ -272,6 +350,7 @@ public class FightEntity : MonoBehaviour
         gameObject.SetActive(true);
         ID.GetACadre(this);
         ID.UpdateGridConstraint();
+        GetAFollowingBar();
         TM.activeFighters.Add(this);
 
         List<Case> myDeployementCases = new List<Case>();
@@ -383,6 +462,7 @@ public class FightEntity : MonoBehaviour
                
                 if (targetIndex < path.Length)
                 {
+
                     if (theGrid.NodeFromWorldPoint(transform.position).myCase.BlockedByEnemy(this) && !AlreadyBlocked)
                     {
                         OccupiedCase = theGrid.NodeFromWorldPoint(transform.position).myCase;
@@ -393,9 +473,11 @@ public class FightEntity : MonoBehaviour
                         break;
                     }
 
-                    else if (AlreadyBlocked)
+                    else 
                     {
-                        AlreadyBlocked = false;
+                        if (AlreadyBlocked)
+                            AlreadyBlocked = false;
+                        theGrid.NodeFromWorldPoint(transform.position).myCase.TakeEffects(this, true);
                     }
                 }
 
@@ -523,6 +605,7 @@ public class FightEntity : MonoBehaviour
             }
         }
         OccupiedCase.Occupied(this);
+        transform.position = OccupiedCase.transform.position;
         if(TM.myFS == FightSituation.Fight)
             ActualizeMovement();
     }
@@ -767,6 +850,8 @@ public class FightEntity : MonoBehaviour
 
         Energy -= UsedCompetence.EnergyCost;
         SpawnChange("Negative/" + "-" + UsedCompetence.EnergyCost.ToString() + " <sprite=11>");
+
+        FC.NonLivingTarget = FC.GetMiddlePoint(OccupiedCase.transform.position, SelectedCase.transform.position);
     }
 
     public void AttackHit()
@@ -845,6 +930,8 @@ public class FightEntity : MonoBehaviour
         }
 
         BlockedEntity = null;
+
+        FC.NonLivingTarget = Vector3.zero;
     }
 
     public List<aCompetence> ActualizedUsableComps()
@@ -923,6 +1010,9 @@ public class FightEntity : MonoBehaviour
                 Displays.Add("Negative/" + "-" + ArmorHit + " <sprite=3>");
             if (HpHit > 0)
                 Displays.Add("Negative/" + "-" + HpHit + " <sprite=0>");
+
+            myFollowingBar.BarChange();
+            myInitiativeCadre.UpdateBars();
         }
         else if (Dodged)
         {
@@ -943,12 +1033,12 @@ public class FightEntity : MonoBehaviour
             {
                 aState NewState = CloneOf(Enemy.UsedCompetence.AppliedStates[i]);
 
-                if (NewState.ConditionAcceptables(this))
+                if (NewState.ConditionAcceptables(this, null, false, Enemy.UsedCompetence.WeaponFilter))
                 {
                     if (!isAStateAlreadyInList(NewState, ActiveStates))
                     {
                         ActiveStates.Add(NewState);
-                        NewState.Activation(this, FirstWeaponTransform.gameObject.GetComponentInChildren<SpriteRenderer>());
+                        NewState.Activation(this, FirstWeaponTransform.gameObject.GetComponentInChildren<SpriteRenderer>(), Enemy.UsedCompetence);
                     }
                     else
                     {
@@ -962,7 +1052,7 @@ public class FightEntity : MonoBehaviour
             {
                 ActualInitiative -= Mathf.RoundToInt(1000 * (Enemy.UsedCompetence.InitiativeDegats / 100));
                 ActualInitiative = Mathf.Clamp(ActualInitiative, 0, 1000);
-                ID.UpdateCadres();
+                ID.UpdateCadres(TM.activeFighters[TM.TurnIndex]);
                 Displays.Add("Negative/" + "-" + Enemy.UsedCompetence.InitiativeDegats + "% of Initiative");
             }
 
@@ -1031,6 +1121,9 @@ public class FightEntity : MonoBehaviour
                 Displays.Add("Negative/" + "-" + ArmorHit + " <sprite=3>");
             if (HpHit > 0)
                 Displays.Add("Negative/" + "-" + HpHit + " <sprite=0>");
+
+            myFollowingBar.BarChange();
+            myInitiativeCadre.UpdateBars();
         }
         else if (Enemy.UsedCompetence.MaxDegats > 0)
         {
@@ -1054,12 +1147,12 @@ public class FightEntity : MonoBehaviour
             {
                 aState NewState = CloneOf(Enemy.UsedCompetence.AppliedStates[i]);
 
-                if (NewState.ConditionAcceptables(this))
+                if (NewState.ConditionAcceptables(this, null, false, Enemy.UsedCompetence.WeaponFilter))
                 {
                     if (!isAStateAlreadyInList(NewState, ActiveStates))
                     {
                         ActiveStates.Add(NewState);
-                        NewState.Activation(this, FirstWeaponTransform.gameObject.GetComponentInChildren<SpriteRenderer>());
+                        NewState.Activation(this, FirstWeaponTransform.gameObject.GetComponentInChildren<SpriteRenderer>(), Enemy.UsedCompetence);
                     }
                     else
                     {
@@ -1073,7 +1166,7 @@ public class FightEntity : MonoBehaviour
             {
                 ActualInitiative -= Mathf.RoundToInt(1000 * (Enemy.UsedCompetence.InitiativeDegats / 100));
                 ActualInitiative = Mathf.Clamp(ActualInitiative, 0, 1000);
-                ID.UpdateCadres();
+                ID.UpdateCadres(TM.activeFighters[TM.TurnIndex]);
                 Displays.Add("Negative/" + "-" + Enemy.UsedCompetence.InitiativeDegats + "% of Initiative");
             }
         }
@@ -1095,12 +1188,12 @@ public class FightEntity : MonoBehaviour
         {
             aState NewState = CloneOf(Enemy.UsedCompetence.AppliedStates[i]);
 
-            if (NewState.ConditionAcceptables(this))
+            if (NewState.ConditionAcceptables(this, null, false, Enemy.UsedCompetence.WeaponFilter))
             {
                 if (!isAStateAlreadyInList(NewState, ActiveStates))
                 {
                     ActiveStates.Add(NewState);
-                    NewState.Activation(this, FirstWeaponTransform.gameObject.GetComponentInChildren<SpriteRenderer>());
+                    NewState.Activation(this, FirstWeaponTransform.gameObject.GetComponentInChildren<SpriteRenderer>(), Enemy.UsedCompetence);
                 }
                 else
                 {
@@ -1149,6 +1242,9 @@ public class FightEntity : MonoBehaviour
                 Displays.Add("Negative/" + "-" + ArmorHit + " <sprite=3>");
             if (HpHit > 0)
                 Displays.Add("Negative/" + "-" + HpHit + " <sprite=0>");
+
+            myFollowingBar.BarChange();
+            myInitiativeCadre.UpdateBars();
         }
         else
         {
@@ -1168,14 +1264,14 @@ public class FightEntity : MonoBehaviour
         GameObject myAnim = Instantiate(Resources.Load<GameObject>("UI/aKillAlert"), ID.transform);
         myAnim.GetComponentInChildren<KillAnimation>().Activation(this);
         TM.RemoveAnEntity(this);
+
+        if (OccupiedCase)
+            LeaveCase();
     }
 
     public void Death()
     {
         GenerateBlockZone(false);
-
-        if (OccupiedCase)
-            LeaveCase();
 
         myInitiativeCadre.Remove();
 
@@ -1188,23 +1284,27 @@ public class FightEntity : MonoBehaviour
         Destroy(gameObject);
     }
 
-    int HitBonuses(FightEntity Enemy)
+    public int HitBonuses(FightEntity Enemy, aCompetence ForcedComp = null)
     {
+        aCompetence theCompetence = ForcedComp;
+        if (!ForcedComp)
+            theCompetence = Enemy.UsedCompetence;
+
         int PercentageToReturn = 0;
 
-        if(Enemy.UsedCompetence.myAttaqueType == AttaqueType.Tranchant)
+        if(theCompetence.myAttaqueType == AttaqueType.Tranchant)
         {
             PercentageToReturn += Enemy.Tranchant;
         }
-        else if (Enemy.UsedCompetence.myAttaqueType == AttaqueType.Perforant)
+        else if (theCompetence.myAttaqueType == AttaqueType.Perforant)
         {
             PercentageToReturn += Enemy.Perforant;
         }
-        else if (Enemy.UsedCompetence.myAttaqueType == AttaqueType.Magique)
+        else if (theCompetence.myAttaqueType == AttaqueType.Magique)
         {
             PercentageToReturn += Enemy.Magique;
         }
-        else if (Enemy.UsedCompetence.myAttaqueType == AttaqueType.Choc)
+        else if (theCompetence.myAttaqueType == AttaqueType.Choc)
         {
             PercentageToReturn += Enemy.Choc;
         }
@@ -1355,7 +1455,7 @@ public class FightEntity : MonoBehaviour
             string[] myStrings = WhatToShow[i].Split(char.Parse("/"));
             GameObject theTextMarker = Instantiate(Resources.Load<GameObject>("UI/aChange"), ID.transform.parent);
             theTextMarker.GetComponent<FollowingUI>().theRenderer = GetComponentInChildren<Renderer>();
-            theTextMarker.GetComponent<FollowingUI>().CaseSafety = OccupiedCase.GetComponentInChildren<Renderer>();
+            theTextMarker.GetComponent<FollowingUI>().CaseSafety = theGrid.NodeFromWorldPoint(transform.position).myCase.GetComponentInChildren<Renderer>();
             theTextMarker.GetComponent<ChangeOnFighter>().Activation(myStrings[1], (float)i, Positiveness(myStrings[0]));
         }
     }
@@ -1365,7 +1465,7 @@ public class FightEntity : MonoBehaviour
         string[] myStrings = WhatToShow.Split(char.Parse("/"));
         GameObject theTextMarker = Instantiate(Resources.Load<GameObject>("UI/aChange"), ID.transform.parent);
         theTextMarker.GetComponent<FollowingUI>().theRenderer = GetComponentInChildren<Renderer>();
-        theTextMarker.GetComponent<FollowingUI>().CaseSafety = OccupiedCase.GetComponentInChildren<Renderer>();
+        theTextMarker.GetComponent<FollowingUI>().CaseSafety = theGrid.NodeFromWorldPoint(transform.position).myCase.GetComponentInChildren<Renderer>();
         theTextMarker.GetComponent<ChangeOnFighter>().Activation(myStrings[1], 0, Positiveness(myStrings[0]));
     }
 
@@ -1377,6 +1477,15 @@ public class FightEntity : MonoBehaviour
             return 2;
         else
             return 1;
+    }
+
+    void GetAFollowingBar()
+    {
+        GameObject MyBars = Instantiate(Resources.Load<GameObject>("UI/aFollowingBar"), DM.transform.parent.GetChild(0));
+        MyBars.GetComponent<FollowingUI>().theRenderer = GetComponentInChildren<SpriteRenderer>();
+        myFollowingBar = MyBars.GetComponent<FollowingBar>();
+
+        myFollowingBar.Activation(this);
     }
 
     #endregion
@@ -1454,6 +1563,7 @@ public class FightEntity : MonoBehaviour
         myNewComp.Name = CompModel.Name;
         myNewComp.Description = CompModel.Description;
 
+        myNewComp.WeaponFilter = CompModel.WeaponFilter;
         myNewComp.myCompetenceType = CompModel.myCompetenceType;
         myNewComp.EnergyCost = CompModel.EnergyCost;
         myNewComp.myAttaqueType = CompModel.myAttaqueType;
@@ -1466,10 +1576,12 @@ public class FightEntity : MonoBehaviour
         myNewComp.MinDegats = CompModel.MinDegats;
         myNewComp.MaxDegats = CompModel.MaxDegats;
         myNewComp.InitiativeDegats = CompModel.InitiativeDegats;
+        myNewComp.ModelStates = CompModel.ModelStates;
         myNewComp.AppliedStates = new List<string>();
         for (int i = 0; i < CompModel.AppliedStates.Count; i++)
         {
             myNewComp.AppliedStates.Add(CompModel.AppliedStates[i]);
+            myNewComp.ModelStates.Add(Resources.Load<aStateModel>("Etats/" + myNewComp.AppliedStates[i]));
         }
         myNewComp.Poussée = CompModel.Poussée;
 
@@ -1480,7 +1592,52 @@ public class FightEntity : MonoBehaviour
 
         myNewComp.TriggerName = CompModel.TriggerName;
 
+        myNewComp.BaseOpportunity = CompModel.BaseOpportunity;
+        myNewComp.PatternIsDirectionnal = CompModel.PatternIsDirectionnal;
+
         return myNewComp;
+    }
+
+    #endregion
+
+    #region Save
+    public void Save(AFighterSave TheData)
+    {
+        var saved = JsonUtility.ToJson(TheData);
+        string path = Application.streamingAssetsPath + "/SavedCharacters/" + TheData.Nom + ".txt";
+        if (TheData.HeroType != "")
+            path = Application.streamingAssetsPath + "/SavedCharacters/" + TheData.HeroType + "/#" + SaveIndex + ".txt";
+        File.WriteAllText(path, saved);
+    }
+    public AFighterSave LoadSavedCharacter(string FighterName)
+    {
+        // Real name for unique characters, type#SaveIndex for others
+        string path = "";
+        if (FighterName.Contains('#'))
+        {
+            string ValidName = "";
+
+            for (int i = 0; i < FighterName.Length; i++)
+            {
+                char ToVerify = FighterName[i];
+                if (ToVerify == ' ')
+                    ValidName += '_';
+                else if (ToVerify == 'é' || ToVerify == 'è')
+                    ValidName += 'e';
+                else
+                    ValidName += ToVerify;
+            }
+
+            string[] SplittedName = ValidName.Split(char.Parse("#"));
+            path = Application.streamingAssetsPath + "/SavedCharacters/" + SplittedName[0] + "/#" + SplittedName[1] + ".txt";
+        }
+        else
+            path = Application.streamingAssetsPath + "/SavedCharacters/" + FighterName + ".txt";
+        string thejson = File.ReadAllText(path);
+        AFighterSave loadInto = ScriptableObject.CreateInstance<AFighterSave>();
+        JsonUtility.FromJsonOverwrite(thejson, loadInto);
+
+        return loadInto;
     }
 
     #endregion

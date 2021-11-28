@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4d2d54d104788418fc4cdf92acbc49, type: 3}
   m_Name: TestEnd
   m_EditorClassIdentifier: 
+  myConditionCrypted: 
+  myCondition: 0
+  mySubject: {fileID: 0}
+  myMinLife: 0
   DialogueNames:
   - Porvas Marte
-  - Porvas Marte
   DialogueLines:
-  - Ouch... That hurts!
-  - You will have to do better to win against me, however. Good luck with that.
+  - That was the last one, good job everyone.

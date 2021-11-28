@@ -70,7 +70,7 @@ public class anApercu : MonoBehaviour
             ShowStat(Parade, newEntity.Parade + "%", newEntity.BaseParade, newEntity.Parade);
             ShowStat(Esquive, newEntity.Esquive + "%", newEntity.BaseEsquive, newEntity.Esquive);
 
-            ShowStat(Tranchant, newEntity.Esquive + "%", newEntity.BaseTranchant, newEntity.Tranchant);
+            ShowStat(Tranchant, "+" + newEntity.Tranchant + "%", newEntity.BaseTranchant, newEntity.Tranchant);
             ShowStat(Perforant, "+" + newEntity.Perforant + "%", newEntity.BasePerforant, newEntity.Perforant);
             ShowStat(Magique, "+" + newEntity.Magique + "%", newEntity.BaseMagique, newEntity.Magique);
             ShowStat(Choc, "+" + newEntity.Choc + "%", newEntity.BaseChoc, newEntity.Choc);

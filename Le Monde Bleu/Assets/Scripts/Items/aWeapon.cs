@@ -18,6 +18,8 @@ public enum HandNumber { OneHanded, TwoHanded }
 [CreateAssetMenu]
 public class aWeapon : ScriptableObject
 {
+    TipsShower TS;
+
     public WeaponType myWeaponType;
     public HandNumber myHandNumber;
     public RuntimeAnimatorController myAnimator;
@@ -39,6 +41,9 @@ public class aWeapon : ScriptableObject
 
     public string ToShowOnTip()
     {
+        if (!TS)
+            TS = TipsShower.Instance;
+
         string toShow = "<b>" + Nom + "</b>" + "\n";
 
         toShow += "<i>" + Description + "</i>" + "\n - - - - - \n";
@@ -55,30 +60,7 @@ public class aWeapon : ScriptableObject
                 break;
         }
 
-        switch (myWeaponType)
-        {
-            case WeaponType.None:
-                break;
-            case WeaponType.AttackMeleeWeapon:
-                toShow += "<color=yellow>melee weapon</color>";
-                break;
-            case WeaponType.AttackRangedWeapon:
-                toShow += "<color=yellow>ranged weapon</color>";
-                break;
-            case WeaponType.HandCombat:
-                toShow += "<color=yellow>handed combat style</color>";
-                break;
-            case WeaponType.DefenseWeapon:
-                toShow += "<color=yellow>defense equipement</color>";
-                break;
-            case WeaponType.SpellCaster:
-                toShow += "<color=yellow>magic object</color>";
-                break;
-            case WeaponType.Everything:
-                break;
-            default:
-                break;
-        }
+        toShow += "<color=yellow>" + TS.NameFromWeaponType(myWeaponType) + "</color>";
 
         if (BonusCounter != 0)
         {

@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Awoken Bow
   m_EditorClassIdentifier: 
   Name: Awoken Bow
+  myFighter: {fileID: 0}
+  LinkedWeapon: {fileID: 0}
+  WeaponFilter: -1
   Description: One shot from this great weapon surpasses by far the power of others
     common bows, and the targets will know it quickly.
   myCompetenceType: 0
@@ -26,6 +29,7 @@ MonoBehaviour:
   MaxDegats: 50
   InitiativeDegats: 0
   AppliedStates: []
+  ModelStates: []
   "Pouss\xE9e": 0
   SelectableCases:
   - {x: -1, y: 1}
@@ -67,3 +71,5 @@ MonoBehaviour:
   - {x: 0, y: 0}
   Logo: {fileID: 0}
   TriggerName: Attack
+  BaseOpportunity: 5
+  PatternIsDirectionnal: 0

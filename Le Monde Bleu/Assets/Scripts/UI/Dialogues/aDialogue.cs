@@ -76,8 +76,7 @@ public class aDialogue : ScriptableObject
             case Condition.None:
                 return false;
             case Condition.LowLife:
-
-                if (mySubject.Hp < myMinLife)
+                if (mySubject && mySubject.Hp < myMinLife)
                     return true;
                 else
                     return false;

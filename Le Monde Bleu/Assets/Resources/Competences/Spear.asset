@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Spear
   m_EditorClassIdentifier: 
   Name: Spear
+  myFighter: {fileID: 0}
+  LinkedWeapon: {fileID: 0}
+  WeaponFilter: -1
   Description: This is not the most powerful method, but it's surely not the most
     dangerous one.
   myCompetenceType: 0
@@ -26,6 +29,7 @@ MonoBehaviour:
   MaxDegats: 40
   InitiativeDegats: 0
   AppliedStates: []
+  ModelStates: []
   "Pouss\xE9e": 0
   SelectableCases:
   - {x: 0, y: 1}
@@ -35,3 +39,5 @@ MonoBehaviour:
   - {x: 0, y: 0}
   Logo: {fileID: 21300000, guid: 382a7467d30e7d248a8200de8032409e, type: 3}
   TriggerName: Attack
+  BaseOpportunity: 5
+  PatternIsDirectionnal: 0

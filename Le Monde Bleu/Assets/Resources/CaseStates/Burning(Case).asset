@@ -21,4 +21,4 @@ MonoBehaviour:
   GivedState: Burned
   Effect: {fileID: 2252909309280942819, guid: 156f5033ffdc79c488a7a976140a663f, type: 3}
   BasePPGTChance: 80
-  LessPPGT: 20
+  LessPPGT: 40

@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Azure Longsword
   m_EditorClassIdentifier: 
   Name: Azure Longsword
+  myFighter: {fileID: 0}
+  LinkedWeapon: {fileID: 0}
+  WeaponFilter: -1
   Description: Witness the azure, for it is the last thing you will see.
   myCompetenceType: 0
   EnergyCost: 4
@@ -25,6 +28,7 @@ MonoBehaviour:
   MaxDegats: 60
   InitiativeDegats: 0
   AppliedStates: []
+  ModelStates: []
   "Pouss\xE9e": 0
   SelectableCases:
   - {x: 0, y: 1}
@@ -32,3 +36,5 @@ MonoBehaviour:
   - {x: 0, y: 0}
   Logo: {fileID: 21300000, guid: 892b0f89d114ee947b00009bd14a1730, type: 3}
   TriggerName: Attack
+  BaseOpportunity: 5
+  PatternIsDirectionnal: 0

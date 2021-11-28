@@ -74,7 +74,7 @@ public class aState : ScriptableObject
     public GameObject Effect;
     public GraphicEffectOn GraphicEffectAppliedOn;
 
-    public void Activation(FightEntity myFightEntity, SpriteRenderer myWeaponRenderer)
+    public void Activation(FightEntity myFightEntity, SpriteRenderer myWeaponRenderer, aCompetence UsedComp = null)
     {
         if (myStateType == StateType.StatChanger)
             myFightEntity.GetType().GetField(StatModified).SetValue(myFightEntity, (int)myFightEntity.GetType().GetField(StatModified).GetValue(myFightEntity) + (int)ModifiedOf);
@@ -104,13 +104,17 @@ public class aState : ScriptableObject
             }
         }
 
+        if(UsedComp)
+            WeaponFilter = UsedComp.WeaponFilter;
+
         if (EffectGivedOnAttackPath != "")
         {
             EffectGivedOnAttack = CloneOf(EffectGivedOnAttackPath);
 
             for (int i = 0; i < myFightEntity.myCompetences.Count; i++)
             {
-                myFightEntity.myCompetences[i].AddAppliedState(EffectGivedOnAttack);
+                if (ConditionAcceptables(myFightEntity, myFightEntity.myCompetences[i].LinkedWeapon, true))
+                    myFightEntity.myCompetences[i].AddAppliedState(EffectGivedOnAttack);
             }
         }
     }
@@ -240,19 +244,32 @@ public class aState : ScriptableObject
         return toShow;
     }
 
-    public bool ConditionAcceptables(FightEntity target)
+    public bool ConditionAcceptables(FightEntity target, aWeapon SpecificWeapon = null, bool ToBeSpecific = false, WeaponType ForcedFilter = WeaponType.Everything)
     {
         bool Acceptable = true;
 
+        if (ForcedFilter != WeaponType.Everything)
+            WeaponFilter = ForcedFilter;
+
         if(WeaponFilter != WeaponType.Everything)
         {
-            if (!WeaponFilter.HasFlag(target.FirstWeaponStats.myWeaponType))
+            if (!ToBeSpecific)
             {
-                Acceptable = false;
-            }               
+                if (!WeaponFilter.HasFlag(target.FirstWeaponStats.myWeaponType))
+                {
+                    Acceptable = false;
+                }
 
-            if (Acceptable == false && target.SideWeaponStats != null && WeaponFilter.HasFlag(target.SideWeaponStats.myWeaponType))
-                Acceptable = true;
+                if (Acceptable == false && target.SideWeaponStats != null && WeaponFilter.HasFlag(target.SideWeaponStats.myWeaponType))
+                    Acceptable = true;
+            }
+            else
+            {
+                if (!SpecificWeapon || !WeaponFilter.HasFlag(SpecificWeapon.myWeaponType))
+                {
+                    Acceptable = false;
+                }
+            }
         }
 
         if (isThereAnAnti(target))

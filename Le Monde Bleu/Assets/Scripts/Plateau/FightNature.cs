@@ -20,7 +20,7 @@ public class FightNature : Singleton<FightNature>
 
     [Header("ToUpdate")]
     int Index = 0;
-    public List<CaseState> ToUpdate;
+    [HideInInspector] public List<CaseState> ToUpdate;
 
     [Header("CoolDown")]
     float CoolTime;

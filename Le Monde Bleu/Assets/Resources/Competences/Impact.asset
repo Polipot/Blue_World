@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: Impact
   m_EditorClassIdentifier: 
   Name: Impact
+  myFighter: {fileID: 0}
+  LinkedWeapon: {fileID: 0}
+  WeaponFilter: -1
   Description: A well placed and powerful attack, that's the secret against the more
     powerfull warriors.
   myCompetenceType: 0
@@ -26,6 +29,7 @@ MonoBehaviour:
   MaxDegats: 20
   InitiativeDegats: 10
   AppliedStates: []
+  ModelStates: []
   "Pouss\xE9e": 0
   SelectableCases:
   - {x: 0, y: 1}
@@ -33,3 +37,5 @@ MonoBehaviour:
   - {x: 0, y: 0}
   Logo: {fileID: 0}
   TriggerName: Attack
+  BaseOpportunity: 5
+  PatternIsDirectionnal: 0

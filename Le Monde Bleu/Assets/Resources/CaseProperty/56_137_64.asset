@@ -15,7 +15,12 @@ MonoBehaviour:
   CaseName: Grass
   isWalkable: 1
   isBlockingVision: 0
-  CaseTexture: {fileID: 21300000, guid: ae86a0796c956a44ab397b106455cd4c, type: 3}
+  CaseTexture:
+  - {fileID: 21300000, guid: 88eb3961a69328e45abe7fa3e010f634, type: 3}
+  - {fileID: 21300000, guid: b82d5593069c57b469089280e3ffe1f9, type: 3}
+  - {fileID: 21300000, guid: 4ce778c1613871448b34f49794c908b1, type: 3}
+  - {fileID: 21300000, guid: 53ffb37b588dd2f4cbce35f19fd7030e, type: 3}
+  - {fileID: 21300000, guid: d4d24795bf8d1314a8ee6e40ca0de7a8, type: 3}
   myCaseType: 2
   ConstantEffect: []
   Burned: {fileID: 11400000, guid: eca2bed55778ef541a9474856b549ca4, type: 2}

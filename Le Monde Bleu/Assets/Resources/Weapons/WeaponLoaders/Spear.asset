@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myWeaponType: 2
   myHandNumber: 0
-  myAnimator: {fileID: 9100000, guid: 01d236e758cad0348be0897836af4a1e, type: 2}
+  myAnimator: {fileID: 9100000, guid: a7e771a3f2f7e824f9a3f9228976a1f2, type: 2}
   LinkedComps:
   - {fileID: 11400000, guid: b0b8ea06429d8304c8ac9172b55bce57, type: 2}
   myGameObject: {fileID: 8153994457973293995, guid: 452c3d9b9c707aa4a9fa84d2e49f6426,
@@ -22,3 +22,10 @@ MonoBehaviour:
   MeleeWeapon: 1
   Nom: Spear
   Description: 'Very useful to keep enemies at distance and control the surroundings. '
+  BonusCounter: 0
+  BonusTranchant: 0
+  BonusPerforant: 0
+  BonusMagique: 0
+  BonusChoc: 0
+  BonusFrappeHeroique: 0
+  EnergyGain: 0

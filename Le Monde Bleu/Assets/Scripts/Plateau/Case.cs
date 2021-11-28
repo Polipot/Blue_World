@@ -55,11 +55,16 @@ public class Case : MonoBehaviour
                 break;
         }
 
+        TakeEffects(newEntity);
+    }
+
+    public void TakeEffects(FightEntity newEntity, bool OnlyPassingBy = false, aCompetence UsedComp = null)
+    {
         List<string> Displays = new List<string>();
 
         for (int i = 0; i < myEffects.Count; i++)
         {
-            if(myEffects[i].GivedState != "")
+            if (myEffects[i].GivedState != "")
             {
                 aState NewState = newEntity.CloneOf(myEffects[i].GivedState);
 
@@ -68,13 +73,15 @@ public class Case : MonoBehaviour
                     if (!newEntity.isAStateAlreadyInList(NewState, newEntity.ActiveStates))
                     {
                         newEntity.ActiveStates.Add(NewState);
-                        NewState.Activation(newEntity, newEntity.FirstWeaponTransform.gameObject.GetComponentInChildren<SpriteRenderer>());
+                        NewState.Activation(newEntity, newEntity.FirstWeaponTransform.gameObject.GetComponentInChildren<SpriteRenderer>(), UsedComp);
+                        Displays.Add(NewState.Positiveness + "/" + NewState.name + " " + NewState.GlyphPath);
                     }
                     else
                     {
                         newEntity.AlreadyIncludedState(NewState, newEntity.ActiveStates).ActiveTurns = NewState.ActiveTurns;
+                        if(!OnlyPassingBy)
+                            Displays.Add(NewState.Positiveness + "/" + NewState.name + " " + NewState.GlyphPath);
                     }
-                    Displays.Add(NewState.Positiveness + "/" + NewState.name + " " + NewState.GlyphPath);
                 }
             }
         }
@@ -96,13 +103,19 @@ public class Case : MonoBehaviour
         {
             myMarqueurSprite.color = CM.MarqueurHighlighted;
             if (EntityOnTop != null)
+            {
                 EntityOnTop.OpenFollowingBar();
+                EntityOnTop.myFollowingBar.Appear();
+            }    
         }
         else
         {
             myMarqueurSprite.color = MarqueurBaseColor;
             if (EntityOnTop != null)
+            {
                 EntityOnTop.CloseFollowingBar();
+                EntityOnTop.myFollowingBar.Disappear();
+            }
         }
     }
 
@@ -168,19 +181,33 @@ public class Case : MonoBehaviour
         }
     }
 
-    public void HighlightAttackCase(bool start)
+    public void HighlightAttackCase(bool start, bool Simulate = false)
     {
         if (start)
         {
             myMarqueurSprite.color = CM.MarqueurAttackCovered;
             if (EntityOnTop != null)
+            {
+                if(Simulate)
+                    EntityOnTop.myFollowingBar.SimulateChanges(TM.activeFighters[TM.TurnIndex], TM.activeFighters[TM.TurnIndex].UsedCompetence);
+                else
+                    EntityOnTop.OpenFollowingBar();
+
                 EntityOnTop.OpenFollowingBar();
+            }
         }
         else
         {
             myMarqueurSprite.color = MarqueurBaseColor;
             if (EntityOnTop != null)
+            {
+                if (!Simulate)
+                    EntityOnTop.myFollowingBar.Disappear();
+                else
+                    EntityOnTop.myFollowingBar.ResetSimulation();
+
                 EntityOnTop.CloseFollowingBar();
+            }
         }
     }
 
@@ -288,7 +315,7 @@ public class Case : MonoBehaviour
         myTypes = myProperties.myCaseType;
 
         Walkable = myProperties.isWalkable;
-        myTexture.sprite = myProperties.CaseTexture;
+        myTexture.sprite = myProperties.CaseTexture[Random.Range(0, myProperties.CaseTexture.Count)];
 
         if (!Walkable)
             myCaseSprite.color = new Color(0f, 0f, 0f, 0.4f);

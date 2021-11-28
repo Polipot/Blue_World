@@ -5,6 +5,7 @@ public class Node : IHeapItem<Node>
 {
 
     public bool walkable;
+    public bool dangerous => myCase != null && myCase.Bloqueurs.Count > 0;
     public Vector3 worldPosition;
     public int gridX;
     public int gridY;
@@ -20,6 +21,9 @@ public class Node : IHeapItem<Node>
     public bool RemovedAsVerifiable;
 
     public Case myCase;
+
+    [Header("IA memory")]
+    public Node Predecessor;
 
     public Node(bool _walkable, Vector3 _worldPos, int _gridX, int _gridY, Case _Case)
     {

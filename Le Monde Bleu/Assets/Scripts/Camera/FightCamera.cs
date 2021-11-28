@@ -5,6 +5,9 @@ using UnityEngine;
 public class FightCamera : Singleton<FightCamera>
 {
     public Transform target;
+    public Transform shordLivedTarget;
+    [HideInInspector] public Vector3 NonLivingTarget;
+    bool hasTarget => shordLivedTarget || target || (NonLivingTarget != Vector3.zero); 
     public bool SoloTraject;
     [HideInInspector]
     public Animator CameraAnimator;
@@ -29,15 +32,26 @@ public class FightCamera : Singleton<FightCamera>
 
     void SmoothFollow()
     {
-        if (target != null)
+        Vector3 TargetPosition = Vector3.zero;
+        if (shordLivedTarget)
+            TargetPosition = shordLivedTarget.position;
+        else if (NonLivingTarget != Vector3.zero)
+            TargetPosition = NonLivingTarget;
+        else if(target)
+            TargetPosition = target.position;
+
+        if (TargetPosition != Vector3.zero)
         {
-            Vector3 HighPosition = new Vector3(target.position.x, target.position.y, -10);
+            Vector3 HighPosition = new Vector3(TargetPosition.x, TargetPosition.y, -10);
             Vector3 smooth = HighPosition - transform.position;
             transform.position += smooth * Time.deltaTime * 10;
             if (SoloTraject && Vector3.Distance(HighPosition, transform.position) <= 0.1f)
             {
                 SoloTraject = false;
-                target = null;
+                if(shordLivedTarget && TargetPosition == shordLivedTarget.position)
+                    shordLivedTarget = null;
+                else if (target && TargetPosition == target.position)
+                    target = null;
             }
         }
     }
@@ -58,7 +72,7 @@ public class FightCamera : Singleton<FightCamera>
 
     void Movement()
     {
-        if(target == null)
+        if(!hasTarget)
         {
             Vector3 theMovement = new Vector3(Input.GetAxisRaw("Horizontal") / 8, Input.GetAxisRaw("Vertical") / 8, 0);
             transform.position += theMovement * Time.deltaTime * 100;
@@ -75,4 +89,6 @@ public class FightCamera : Singleton<FightCamera>
         SoloTraject = true;
         target = newTarget;
     }
+
+    public Vector3 GetMiddlePoint(Vector3 FirstPosition, Vector3 SecondPosition) => SecondPosition + ((FirstPosition - SecondPosition) / 2);
 }
