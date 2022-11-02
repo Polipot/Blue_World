@@ -9,10 +9,11 @@ public class AutoDestruction : MonoBehaviour
     public bool DestroyActivated;
     bool AlreadyStopped;
 
-    // Start is called before the first frame update
-    void Start()
+    public void Death()
     {
-        
+        ParticleLightSpawner particleLightSpawner = GetComponent<ParticleLightSpawner>();
+        if (particleLightSpawner)
+            particleLightSpawner.LightDeath();
     }
 
     // Update is called once per frame

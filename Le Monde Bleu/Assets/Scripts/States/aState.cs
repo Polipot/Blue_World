@@ -174,7 +174,7 @@ public class aState : ScriptableObject
                 {
                     for (int i = 0; i < myFightEntity.myCompetences.Count; i++)
                         if(EffectGivedOnAttack)myFightEntity.myCompetences[i].RevokeAppliedState(EffectGivedOnAttack);
-                    Effect.GetComponent<AutoDestruction>().DestroyActivated = true;
+                    Effect.GetComponent<AutoDestruction>().Death();
                     Effect.GetComponent<ParticleSystem>().Stop();
                 }
                 myFightEntity.ActiveStates.Remove(this);
@@ -193,7 +193,7 @@ public class aState : ScriptableObject
                     for (int i = 0; i < myFightEntity.myCompetences.Count; i++)
                         if (EffectGivedOnAttack) myFightEntity.myCompetences[i].RevokeAppliedState(EffectGivedOnAttack);
                 }
-                Effect.GetComponent<AutoDestruction>().DestroyActivated = true;
+                Effect.GetComponent<AutoDestruction>().Death();
                 Effect.GetComponent<ParticleSystem>().Stop();
             }
             myFightEntity.ActiveStates.Remove(this);
@@ -308,5 +308,11 @@ public class aState : ScriptableObject
         myClone.GraphicEffectAppliedOn = myModel.GraphicEffectAppliedOn;
 
         return myClone;
+    }
+
+    public void EffectDeath()
+    {
+        if(Effect)
+            Effect.GetComponent<AutoDestruction>().Death();
     }
 }

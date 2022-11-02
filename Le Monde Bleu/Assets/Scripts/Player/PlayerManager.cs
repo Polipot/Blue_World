@@ -19,15 +19,14 @@ public class PlayerManager : Singleton<PlayerManager>
     [Header("Raycast pour cases")]
     public LayerMask CaseLayer;
     Case MovementHighLightedCase;
-    public Case AttackCenterCase;
-    public List<Case> AttackPattern;
+    [HideInInspector] public Case AttackCenterCase;
+    [HideInInspector] public List<Case> AttackPattern;
 
     [Header("Tracé du mouvement")]
-    public List<Case> ManualMovement;
+    [HideInInspector] public List<Case> ManualMovement;
 
-    [HideInInspector]
-    public FightEntity actualEntity;
-    public FightEntity selectedEntity;
+    [HideInInspector] public FightEntity actualEntity;
+    [HideInInspector] public FightEntity selectedEntity;
 
     public bool OverUI => ES.IsPointerOverGameObject();
 

@@ -26,4 +26,6 @@ public class CaseStateModel : ScriptableObject
     [Header("Propagation Effect")]
     public int BasePPGTChance;
     public int LessPPGT;
+    [Header("UI"), Tooltip("0 is considered dangerous, 1 is considered neutral, 2 is considered good")]
+    public int Dangerosity;
 }

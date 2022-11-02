@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Ardent Weapon
   myFighter: {fileID: 0}
-  LinkedWeapon: {fileID: 11400000, guid: c5e5adc27cbe8ca4d8a2f9fb52c3c7c5, type: 2}
+  LinkedWeapon: {fileID: 0}
   WeaponFilter: 10
   Description: The allied weapons catch fire, not harming their owners, not disintegrating
     by heat, but keeping all these effects for the ennemy.
@@ -30,66 +30,7 @@ MonoBehaviour:
   InitiativeDegats: 0
   AppliedStates:
   - Burning Weapon
-  ModelStates:
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
-  - {fileID: 11400000, guid: 154ae6422fcbd8f4c811b8a201654f39, type: 2}
+  ModelStates: []
   "Pouss\xE9e": 0
   SelectableCases:
   - {x: 0, y: 0}
@@ -110,6 +51,7 @@ MonoBehaviour:
   - {x: 1, y: 0}
   - {x: -1, y: 0}
   Logo: {fileID: 0}
+  CultureColor: {r: 1, g: 0.7019608, b: 0, a: 1}
   TriggerName: Magic
   BaseOpportunity: 3
   PatternIsDirectionnal: 0

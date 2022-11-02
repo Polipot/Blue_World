@@ -43,6 +43,7 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -90,6 +91,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8153994457973293992}
     m_Modifications:
+    - target: {fileID: 1914089375743250655, guid: 220dc9ac82e49ad4ba898f97dfd8caf6,
+        type: 3}
+      propertyPath: isEvent
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2252909309280942819, guid: 220dc9ac82e49ad4ba898f97dfd8caf6,
         type: 3}
       propertyPath: m_Name

@@ -38,6 +38,7 @@ MonoBehaviour:
   PaternCase:
   - {x: 0, y: 0}
   Logo: {fileID: 21300000, guid: 382a7467d30e7d248a8200de8032409e, type: 3}
+  CultureColor: {r: 0.5647059, g: 0.24705882, b: 0.18431373, a: 1}
   TriggerName: Attack
   BaseOpportunity: 5
   PatternIsDirectionnal: 0

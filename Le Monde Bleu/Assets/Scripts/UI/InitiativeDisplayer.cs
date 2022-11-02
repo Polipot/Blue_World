@@ -24,7 +24,7 @@ public class InitiativeDisplayer : Singleton<InitiativeDisplayer>
     public Color Fond_Ennemi;
     public Color Fond_Neutre;
 
-    public List<InitiativeCadre> allCadres;
+    [HideInInspector] public List<InitiativeCadre> allCadres;
 
     // Start is called before the first frame update
     void Awake()

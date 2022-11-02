@@ -31,9 +31,9 @@ public class DialogueManager : Singleton<DialogueManager>
     [HideInInspector] public bool DialogueActive;
 
     [Header("Identities")]
-    public List<string> IdentitiesName;
-    public List<Alignement> IdentitiesAlignement;
-    public List<Sprite> IdentitiesPortrait;
+    [HideInInspector] public List<string> IdentitiesName;
+    [HideInInspector] public List<Alignement> IdentitiesAlignement;
+    [HideInInspector] public List<Sprite> IdentitiesPortrait;
 
     [Header("Writing")]
     bool Writing;

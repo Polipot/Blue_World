@@ -21,9 +21,8 @@ public class FightEntity : MonoBehaviour
     CompétencesUI CUI;
     DialogueManager DM;
 
-    [HideInInspector]public anAI myAI;
-    [HideInInspector]
-    public WeaponFX myWeaponFX;
+    [HideInInspector] public anAI myAI;
+    [HideInInspector] public WeaponFX myWeaponFX;
 
     [Header("Pathfinding")]
     int speed = 5;
@@ -31,14 +30,14 @@ public class FightEntity : MonoBehaviour
     int targetIndex;
 
     [Header("Position on Grid")]
-    public Case OccupiedCase;
+    [HideInInspector] public Case OccupiedCase;
 
     [Header("Global")]
     public string Nom;
     [Tooltip("Only for non-unique characters!")]
     public int SaveIndex;
     [Tooltip("Only for non-unique heroes!")]
-    public string HeroType;
+    public string FighterType;
     [TextArea(10,30)]
     public string Description;
     public Classe myClasse;
@@ -77,6 +76,7 @@ public class FightEntity : MonoBehaviour
     public InitiativeCadre myInitiativeCadre;
     [HideInInspector]
     public FollowingBar myFollowingBar;
+    [HideInInspector] public List<ChangeOnFighter> myCurrentChanges;
 
     [Header("Statistiques")]
     public int Hp;
@@ -128,16 +128,16 @@ public class FightEntity : MonoBehaviour
     public Animator myAnimator;
 
     [Header("Pattern Attaqué")]
-    public aCompetence UsedCompetence;
-    public List<Case> AttackedPattern;
+    [HideInInspector] public aCompetence UsedCompetence;
+    [HideInInspector] public List<Case> AttackedPattern;
 
-    public void Activation(string NameCode)
+    public void Activation(string NameCode, bool Sleep = false)
     {
         #region LoadCharacter
         AFighterSave mySave = LoadSavedCharacter(NameCode);
 
         Nom = mySave.Nom;
-        HeroType = mySave.HeroType;
+        FighterType = mySave.HeroType;
         Description = mySave.Description;
         myClasse = mySave.myClasse;
         myAlignement = mySave.myAlignement;
@@ -193,7 +193,8 @@ public class FightEntity : MonoBehaviour
         CUI = CompétencesUI.Instance;
         DM = DialogueManager.Instance;
         ID = InitiativeDisplayer.Instance;
-        if (!TM.Reinforcements.Contains(this))
+
+        if (!Sleep)
         {
             ID.GetACadre(this);
             GetAFollowingBar();
@@ -211,7 +212,7 @@ public class FightEntity : MonoBehaviour
                 ClasseDiviser = 1;
                 break;
             case Classe.Soldier:
-                ClasseDiviser = 4;
+                ClasseDiviser = 2;
                 break;
             default:
                 break;
@@ -243,6 +244,12 @@ public class FightEntity : MonoBehaviour
         DM.IdentitiesName.Add(Nom);
         DM.IdentitiesAlignement.Add(myAlignement);
         DM.IdentitiesPortrait.Add(Portrait);
+
+        if (Sleep)
+        {
+            TM.Reinforcements.Add(this);
+            gameObject.SetActive(false);
+        }
     }
 
     #region Loads
@@ -274,7 +281,7 @@ public class FightEntity : MonoBehaviour
         BlockWeapon = FirstWeaponStats;
 
         List <aCompetence> newComps = myCompetences.Union(FirstWeaponStats.LinkedComps).ToList();
-        
+
         myCompetences = newComps;
 
         if (SideWeaponName != "")
@@ -335,13 +342,16 @@ public class FightEntity : MonoBehaviour
 
     private void Start()
     {
-        if (!TM.Reinforcements.Contains(this))
+        TM.activeFighters.Add(this);
+        OccupyCase();
+
+        /*if (!TM.Reinforcements.Contains(this))
         {
             TM.activeFighters.Add(this);
             OccupyCase();
-        }           
+        }
         else
-            gameObject.SetActive(false);
+            gameObject.SetActive(false);*/
         
     }
 
@@ -351,7 +361,6 @@ public class FightEntity : MonoBehaviour
         ID.GetACadre(this);
         ID.UpdateGridConstraint();
         GetAFollowingBar();
-        TM.activeFighters.Add(this);
 
         List<Case> myDeployementCases = new List<Case>();
         if (myAlignement == Alignement.Ennemi)
@@ -370,8 +379,6 @@ public class FightEntity : MonoBehaviour
             int rnd = Random.Range(0, myDeployementCases.Count);
             transform.position = myDeployementCases[rnd].transform.position;
 
-            OccupyCase();
-
             FC.target = transform;
         }
 
@@ -380,7 +387,7 @@ public class FightEntity : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && IsPlaying)
+        if (Input.GetKeyDown(KeyCode.Space) && IsPlaying && !myAI && (mySituation == Situation.ChooseMove || mySituation == Situation.None))
         {
             EndTurn();
         }
@@ -606,8 +613,10 @@ public class FightEntity : MonoBehaviour
         }
         OccupiedCase.Occupied(this);
         transform.position = OccupiedCase.transform.position;
-        if(TM.myFS == FightSituation.Fight)
+        if (TM.myFS == FightSituation.Fight)
             ActualizeMovement();
+        else if (TM.myFS == FightSituation.Reinforcement)
+            GenerateBlockZone(true);
     }
 
     public void LeaveCase()
@@ -676,13 +685,13 @@ public class FightEntity : MonoBehaviour
         Energy += EnergyGain;
         Energy = Mathf.Clamp(Energy, 0, MaxEnergy);
 
-        ActualizeMovement();
-
         IsPlaying = true;
 
         PM.PlayingApercu.ActualizeShowed(this);
 
-        if(myAlignement == Alignement.Membre)
+        ActualizeMovement();
+
+        /*if (myAlignement == Alignement.Membre)
         {
             foreach (Transform child in CUI.transform)
             {
@@ -698,10 +707,16 @@ public class FightEntity : MonoBehaviour
                 else
                     newButton.GetComponent<Button>().interactable = false;
             }
-        }
+        }*/
 
         if (myAI)
             myAI.NeedsToBeCooled = true;
+    }
+
+    public void TryEndTurn()
+    {
+        if (IsPlaying && !myAI && (mySituation == Situation.ChooseMove || mySituation == Situation.None))
+            EndTurn();
     }
 
     public void EndTurn()
@@ -765,8 +780,7 @@ public class FightEntity : MonoBehaviour
                 {
                     PM.PlayingApercu.ActualizeShowed(this);
                 }
-
-
+                
                 TM.ActualizeBlocage();
             }
         }
@@ -901,6 +915,17 @@ public class FightEntity : MonoBehaviour
                 }
             }
         }
+
+        if(UsedCompetence.AppliedCaseStates.Count > 0)
+        {
+            for (int x = 0; x < UsedCompetence.AppliedCaseStates.Count; x++)
+            {
+                for (int i = 0; i < AttackedPattern.Count; i++)
+                {
+                    AttackedPattern[i].ApplyNewCaseState(UsedCompetence.AppliedCaseStates[x]);
+                }
+            }
+        }
     }
 
     public void EndAttack()
@@ -908,7 +933,7 @@ public class FightEntity : MonoBehaviour
         AttackedPattern = new List<Case>();
         UsedCompetence = null;
         CM.ResetCases();
-        if (!InBlocage)
+        if (!InBlocage && Hp > 0)
         {
             ActualizeMovement();
             mySituation = Situation.ChooseMove;
@@ -966,17 +991,19 @@ public class FightEntity : MonoBehaviour
 
         if (DodgeRoll <= Esquive && AlreadyBlocked)
         {
-            myAnimator.SetTrigger("Dodge");
+            if(Enemy != this)
+                myAnimator.SetTrigger("Dodge");
             Dodged = true;
             FHMultiplier = 0;
         }
         else if(ParadeRoll <= Parade && !AlreadyBlocked)
         {
-            myAnimator.SetTrigger("Parade");
+            if (Enemy != this)
+                myAnimator.SetTrigger("Parade");
             Pared = true;
             FHMultiplier = 0;
         }
-        else
+        else if (Enemy != this)
         {
             myAnimator.SetTrigger("Hited");
         }
@@ -1077,19 +1104,22 @@ public class FightEntity : MonoBehaviour
 
         if (DodgeRoll <= Esquive && AlreadyBlocked && Enemy.UsedCompetence.MaxDegats > 0)
         {
-            myAnimator.SetTrigger("Dodge");
+            if (Enemy != this)
+                myAnimator.SetTrigger("Dodge");
             Dodged = true;
             FHMultiplier = 0;
         }
         else if (ParadeRoll <= Parade && !AlreadyBlocked && Enemy.UsedCompetence.MaxDegats > 0)
         {
-            myAnimator.SetTrigger("Parade");
+            if (Enemy != this)
+                myAnimator.SetTrigger("Parade");
             Pared = true;
             FHMultiplier = 0;
         }
         else
         {
-            myAnimator.SetTrigger("Hited");
+            if (Enemy != this)
+                myAnimator.SetTrigger("Hited");
         }
 
         if (Random.Range(0f, 100f) <= Enemy.FrappeHeroique)
@@ -1213,8 +1243,6 @@ public class FightEntity : MonoBehaviour
 
     public void StateHitTaken(aState HitingState)
     {
-        myAnimator.SetTrigger("Hited");
-
         float FHMultiplier = 1;
 
         int theHit = HitingState.InflictedDamages;
@@ -1263,10 +1291,11 @@ public class FightEntity : MonoBehaviour
     {
         GameObject myAnim = Instantiate(Resources.Load<GameObject>("UI/aKillAlert"), ID.transform);
         myAnim.GetComponentInChildren<KillAnimation>().Activation(this);
-        TM.RemoveAnEntity(this);
 
         if (OccupiedCase)
             LeaveCase();
+
+        TM.RemoveAnEntity(this);
     }
 
     public void Death()
@@ -1280,6 +1309,9 @@ public class FightEntity : MonoBehaviour
             PM.selectedEntity = null;
             CloseFollowingBar();
         }
+
+        foreach (aState state in ActiveStates)
+            state.EffectDeath();
 
         Destroy(gameObject);
     }
@@ -1320,11 +1352,11 @@ public class FightEntity : MonoBehaviour
     {
         if (BlockWeapon.MeleeWeapon && BlockWeapon.LinkedComps.Count > 0 && DoIt)
         {
-            Node PlayingNode = null;
-            if(TM.TurnIndex < TM.activeFighters.Count)
+            Node PlayingNode = theGrid.grid[(int)OccupiedCase.PointInNode.x, (int)OccupiedCase.PointInNode.y];
+            /*if(TM.TurnIndex < TM.activeFighters.Count)
             {
                 PlayingNode = theGrid.grid[(int)TM.activeFighters[TM.TurnIndex].OccupiedCase.PointInNode.x, (int)TM.activeFighters[TM.TurnIndex].OccupiedCase.PointInNode.y];
-            }
+            }*/
 
             List<Node> myNodes = thePathfinding.LoadAttackReachables(OccupiedCase.PointInNode, BlockWeapon.LinkedComps[0].SelectableCases, BlockWeapon.LinkedComps[0], true, PlayingNode);
 
@@ -1352,7 +1384,7 @@ public class FightEntity : MonoBehaviour
     public void ShowZone(bool DoIt)
     {
         // && myAlignement == Alignement.Ennemi
-        if (DoIt && TM.TurnIndex < TM.activeFighters.Count && TM.activeFighters[TM.TurnIndex].myAlignement == Alignement.Membre )
+        if (DoIt && (TM.TurnIndex < TM.activeFighters.Count && TM.activeFighters[TM.TurnIndex].myAlignement == Alignement.Membre || TM.myFS == FightSituation.Reinforcement))
         {
             for (int i = 0; i < MyBlockedCases.Count; i++)
             {
@@ -1456,8 +1488,11 @@ public class FightEntity : MonoBehaviour
             GameObject theTextMarker = Instantiate(Resources.Load<GameObject>("UI/aChange"), ID.transform.parent);
             theTextMarker.GetComponent<FollowingUI>().theRenderer = GetComponentInChildren<Renderer>();
             theTextMarker.GetComponent<FollowingUI>().CaseSafety = theGrid.NodeFromWorldPoint(transform.position).myCase.GetComponentInChildren<Renderer>();
-            theTextMarker.GetComponent<ChangeOnFighter>().Activation(myStrings[1], (float)i, Positiveness(myStrings[0]));
+            myCurrentChanges.Add(theTextMarker.GetComponent<ChangeOnFighter>());
+            theTextMarker.GetComponent<ChangeOnFighter>().Activation(myStrings[1], (float)myCurrentChanges.Count - 1, Positiveness(myStrings[0]));
         }
+
+        myCurrentChanges.Clear();
     }
 
     public void SpawnChange(string WhatToShow)
@@ -1466,7 +1501,8 @@ public class FightEntity : MonoBehaviour
         GameObject theTextMarker = Instantiate(Resources.Load<GameObject>("UI/aChange"), ID.transform.parent);
         theTextMarker.GetComponent<FollowingUI>().theRenderer = GetComponentInChildren<Renderer>();
         theTextMarker.GetComponent<FollowingUI>().CaseSafety = theGrid.NodeFromWorldPoint(transform.position).myCase.GetComponentInChildren<Renderer>();
-        theTextMarker.GetComponent<ChangeOnFighter>().Activation(myStrings[1], 0, Positiveness(myStrings[0]));
+        myCurrentChanges.Add(theTextMarker.GetComponent<ChangeOnFighter>());
+        theTextMarker.GetComponent<ChangeOnFighter>().Activation(myStrings[1], (float)myCurrentChanges.Count - 1, Positiveness(myStrings[0]));
     }
 
     int Positiveness(string Result)
@@ -1576,19 +1612,29 @@ public class FightEntity : MonoBehaviour
         myNewComp.MinDegats = CompModel.MinDegats;
         myNewComp.MaxDegats = CompModel.MaxDegats;
         myNewComp.InitiativeDegats = CompModel.InitiativeDegats;
-        myNewComp.ModelStates = CompModel.ModelStates;
+
+        myNewComp.ModelStates = new List<aStateModel>();
         myNewComp.AppliedStates = new List<string>();
         for (int i = 0; i < CompModel.AppliedStates.Count; i++)
         {
             myNewComp.AppliedStates.Add(CompModel.AppliedStates[i]);
             myNewComp.ModelStates.Add(Resources.Load<aStateModel>("Etats/" + myNewComp.AppliedStates[i]));
         }
+        
+        myNewComp.AppliedCaseStates = new List<string>();
+
+        for (int i = 0; i < CompModel.AppliedCaseStates.Count; i++)
+        {
+            myNewComp.AppliedCaseStates.Add(CompModel.AppliedCaseStates[i]);
+        }
+
         myNewComp.Poussée = CompModel.Poussée;
 
         myNewComp.SelectableCases = CompModel.SelectableCases;
         myNewComp.PaternCase = CompModel.PaternCase;
 
         myNewComp.Logo = CompModel.Logo;
+        myNewComp.CultureColor = CompModel.CultureColor;
 
         myNewComp.TriggerName = CompModel.TriggerName;
 

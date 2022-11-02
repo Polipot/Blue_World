@@ -49,20 +49,18 @@ public class FightNature : Singleton<FightNature>
         {
             FirstTurn = false;
             CM.GetAllCases();
-            theGrid.NodeFromWorldPoint(new Vector3(1, 1, 0)).myCase.ApplyNewCaseState("Burning(Case)");
+            
         }
-        else
+
+        for (int i = 0; i < CM.AllCases.Count; i++)
         {
-            for(int i = 0; i < CM.AllCases.Count; i++)
+            if (CM.AllCases[i].myEffects.Count > 0)
             {
-                if(CM.AllCases[i].myEffects.Count > 0)
+                foreach (CaseState myCase in CM.AllCases[i].myEffects)
                 {
-                    foreach(CaseState myCase in CM.AllCases[i].myEffects)
+                    if (myCase.BaseTime > 0)
                     {
-                        if (myCase.BaseTime > 0)
-                        {
-                            ToUpdate.Add(myCase);
-                        }
+                        ToUpdate.Add(myCase);
                     }
                 }
             }

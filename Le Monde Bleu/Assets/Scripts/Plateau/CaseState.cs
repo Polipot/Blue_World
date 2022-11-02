@@ -23,6 +23,8 @@ public class CaseState : ScriptableObject
     [Space]
     [Header("Graphics")]
     public GameObject Effect;
+    [Header("UI")]
+    public int Dangerosity;
     [Header("Propagation Effect")]
     public int BasePPGTChance;
     public int MyPPGTChance;

@@ -9,6 +9,8 @@ public class TipsShower : Singleton<TipsShower>
 {
     FightCamera FC;
 
+    float NotInstant;
+    bool isNotInstant = false;
     aTip Actual;
     TextMeshProUGUI myText;
     GameObject Accroche;
@@ -35,6 +37,8 @@ public class TipsShower : Singleton<TipsShower>
     {
         bool Changed = false;
 
+        RaycastHit2D my2DHit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
         if (EventSystem.current.IsPointerOverGameObject())
         {
             PointerEventData pointer = new PointerEventData(EventSystem.current);
@@ -49,7 +53,7 @@ public class TipsShower : Singleton<TipsShower>
                 {
                     if (go.gameObject.GetComponent<aTip>() != null && go.gameObject.GetComponent<aTip>() == Actual)
                     {
-                        
+
                     }
                     else if (go.gameObject.GetComponent<aTip>() != null && go.gameObject.GetComponent<aTip>() != Actual)
                     {
@@ -59,6 +63,8 @@ public class TipsShower : Singleton<TipsShower>
                         InitiativeCadre Cadre = Actual.gameObject.GetComponentInParent<InitiativeCadre>();
                         if (Cadre && Cadre.myEntity)
                             FC.shordLivedTarget = Cadre.myEntity.transform;
+
+                        isNotInstant = false;
                     }
                     else
                     {
@@ -67,6 +73,8 @@ public class TipsShower : Singleton<TipsShower>
 
                         if (FC.shordLivedTarget)
                             FC.shordLivedTarget = null;
+
+                        isNotInstant = false;
                     }
                 }
             }
@@ -77,16 +85,42 @@ public class TipsShower : Singleton<TipsShower>
 
                 if (FC.shordLivedTarget)
                     FC.shordLivedTarget = null;
+
+                isNotInstant = false;
             }
         }
 
-        else if(Actual != null)
+        else if ( my2DHit && my2DHit.collider.GetComponent<aTip>())
+        {
+            aTip NewTip = my2DHit.collider.GetComponent<aTip>();
+            if (NewTip != Actual)
+            {
+                Actual = NewTip;
+                Changed = true;
+
+                if (FC.shordLivedTarget)
+                    FC.shordLivedTarget = null;
+
+                NotInstant = 0;
+                isNotInstant = true;
+            }
+            else if(NotInstant < 1.5f)
+            {
+                NotInstant += Time.deltaTime;
+                if(NotInstant  >= 1.5f)
+                    Changed = true;
+            }                
+        }
+
+        else if (Actual != null)
         {
             Actual = null;
             Changed = true;
 
             if (FC.shordLivedTarget)
                 FC.shordLivedTarget = null;
+
+            isNotInstant = false;
         }
 
         if(Changed)
@@ -109,9 +143,9 @@ public class TipsShower : Singleton<TipsShower>
         myRectTransform.anchoredPosition = (NewPosition / CanvasRectTransform.localScale.x) - Correction;
     }
 
-    void ActualizeShower()
+    void ActualizeShower(bool ForceNotShown = false)
     {
-        if (Actual)
+        if (Actual && (!isNotInstant || NotInstant > 1.5f))
         {
             if (!Accroche.activeSelf)
                 Accroche.SetActive(true);

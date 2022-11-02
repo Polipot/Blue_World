@@ -17,8 +17,8 @@ MonoBehaviour:
   isBlockingVision: 0
   CaseTexture:
   - {fileID: 21300000, guid: e3e8aee5fdd0c834fab688752385bd48, type: 3}
-  - {fileID: 21300000, guid: c4e40153e7cfb2c4cb234c6e0751a087, type: 3}
+  SpecialMaterial: {fileID: 2100000, guid: b4fc8e16c1e72ae44849390433234317, type: 2}
   myCaseType: 0
   ConstantEffect:
-  - Water(Case)
+  - Wet
   Burned: {fileID: 0}

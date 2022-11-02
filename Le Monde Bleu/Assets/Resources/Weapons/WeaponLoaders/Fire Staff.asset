@@ -17,9 +17,17 @@ MonoBehaviour:
   myAnimator: {fileID: 9100000, guid: 01d236e758cad0348be0897836af4a1e, type: 2}
   LinkedComps:
   - {fileID: 11400000, guid: 54a3ef5d47c0e6c47b23977130c434b9, type: 2}
+  - {fileID: 11400000, guid: c98d90d968c220e44bd3e1376a01d0ec, type: 2}
   myGameObject: {fileID: 8153994457973293995, guid: baf71f64631698f4ab1b362ac2506106,
     type: 3}
   MeleeWeapon: 0
   Nom: Fire Staff
   Description: An extended arm of the powers of a mage. The instable energy trapped
     in it only seeks destruction, to disappear in the biggest possible explosion.
+  BonusCounter: 0
+  BonusTranchant: 0
+  BonusPerforant: 0
+  BonusMagique: 0
+  BonusChoc: 0
+  BonusFrappeHeroique: 0
+  EnergyGain: 0

@@ -77,6 +77,8 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -85,9 +87,9 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -108,9 +110,12 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
   platformSettings:
   - serializedVersion: 3
@@ -540,6 +545,25 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      Perforant: -4508438524811680500
+      "Mal\xE9dictionDeRoche": -3117603426467709329
+      Esquive: -4111241339432341137
+      Health: -2936595296640370306
+      Mouvement: -6261511154288576176
+      Initiative: 5234068190828858306
+      Tranchant: -1134915416547686904
+      Gain_Energie: -4606832794886559740
+      Resistance: 8543383235858054168
+      Parade: -3419071078050127254
+      Magique: -2645303112184430165
+      Frappe_Heroique: 8898939699480105145
+      Choc: 7698198004632866309
+      Armor: -4942956900422213771
+      Energie: -1255480147374600473
+      Baignade: 3791443265492182210
+      "ArmeEnflamm\xE9e": -889701023070223144
+      Brulure: -4275427909761683110
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

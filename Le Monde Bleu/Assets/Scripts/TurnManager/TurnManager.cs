@@ -16,16 +16,21 @@ public class TurnManager : Singleton<TurnManager>
     [Header("Global")]
     public List<string> FightersCodes;
     [HideInInspector] public FightSituation myFS;
-    public List<FightEntity> activeFighters;
+    [HideInInspector] public List<FightEntity> activeFighters;
     [Space]
     [HideInInspector] public int TurnIndex;
     [HideInInspector] public bool NeedsNewTurn;
+
+    [Header("Cooler")]
+    bool NeedsToCool = true;
+    float CoolTime = 1f;
 
     [Header("AutoDeploying")]
     float TempsBeforeAD;
 
     [Header("Reinforcements")]
-    public List<FightEntity> Reinforcements;
+    public List<string> ReinforcementsCodes;
+    [HideInInspector] public List<FightEntity> Reinforcements;
     int InitiativeTime;
     public int InitiativeLatency;
     bool HasReinforcement => Reinforcements.Count > 0;
@@ -50,8 +55,11 @@ public class TurnManager : Singleton<TurnManager>
         }
 
         foreach(string CodeName in FightersCodes)
-        {
             SetNewBody(CodeName);
+
+        foreach(string CodeName in ReinforcementsCodes)
+        {
+            SetNewBody(CodeName, true);
         }
 
         ID = InitiativeDisplayer.Instance;
@@ -65,86 +73,99 @@ public class TurnManager : Singleton<TurnManager>
     {
         if (NeedsNewTurn && myFS == FightSituation.Fight)
         {
-            bool Found = false;
-            int maxSurplus = 0;
-            int actualSurplus = 0;
-            int Index = 0;
-
-            bool RDeploy = false;
-            if (HasReinforcement)
+            if (NeedsToCool)
             {
-                InitiativeTime += 20;
-                if (InitiativeTime >= InitiativeLatency)
+                CoolTime -= Time.deltaTime;
+                if(CoolTime <= 0)
                 {
-                    myFS = FightSituation.Reinforcement;
-                    RDeploy = true;
+                    NeedsToCool = false;
+                    CoolTime = 1f;
                 }
             }
 
-            if (!RDeploy)
+            else
             {
-                for (int i = 0; i < activeFighters.Count; i++)
+                bool Found = false;
+                int maxSurplus = 0;
+                int actualSurplus = 0;
+                int Index = 0;
+
+                bool RDeploy = false;
+                if (HasReinforcement)
                 {
-                    actualSurplus = activeFighters[i].ActualInitiative - activeFighters[i].MaxInitiative;
+                    InitiativeTime += 20;
+                    if (InitiativeTime >= InitiativeLatency)
+                    {
+                        myFS = FightSituation.Reinforcement;
+                        RDeploy = true;
+                    }
+                }
+
+                if (!RDeploy)
+                {
+                    for (int i = 0; i < activeFighters.Count; i++)
+                    {
+                        actualSurplus = activeFighters[i].ActualInitiative - activeFighters[i].MaxInitiative;
+                        if (actualSurplus >= 0)
+                        {
+                            if (!Found)
+                            {
+                                Found = true;
+                                maxSurplus = actualSurplus;
+                                Index = i;
+                            }
+                            else if (Found && actualSurplus > maxSurplus)
+                            {
+                                maxSurplus = actualSurplus;
+                                Index = i;
+                            }
+                        }
+                    }
+
+                    actualSurplus = FN.ActualInitiative - 1000;
                     if (actualSurplus >= 0)
                     {
                         if (!Found)
                         {
                             Found = true;
                             maxSurplus = actualSurplus;
-                            Index = i;
+                            Index = activeFighters.Count;
                         }
                         else if (Found && actualSurplus > maxSurplus)
                         {
                             maxSurplus = actualSurplus;
-                            Index = i;
+                            Index = activeFighters.Count;
                         }
                     }
-                }
 
-                actualSurplus = FN.ActualInitiative - 1000;
-                if (actualSurplus >= 0)
-                {
-                    if (!Found)
+                    FightEntity myNewTurnOwner = null;
+                    if (Found)
                     {
-                        Found = true;
-                        maxSurplus = actualSurplus;
-                        Index = activeFighters.Count;
-                    }
-                    else if (Found && actualSurplus > maxSurplus)
-                    {
-                        maxSurplus = actualSurplus;
-                        Index = activeFighters.Count;
-                    }
-                }
-
-                FightEntity myNewTurnOwner = null;
-                if (Found)
-                {
-                    if (Index != activeFighters.Count)
-                    {
-                        TurnIndex = Index;
-                        activeFighters[TurnIndex].ActualInitiative = maxSurplus;
-                        myNewTurnOwner = activeFighters[TurnIndex];
-                        NewTurn();
+                        if (Index != activeFighters.Count)
+                        {
+                            TurnIndex = Index;
+                            activeFighters[TurnIndex].ActualInitiative = maxSurplus;
+                            myNewTurnOwner = activeFighters[TurnIndex];
+                            NewTurn();
+                        }
+                        else
+                        {
+                            TurnIndex = Index;
+                            FN.ActualInitiative = maxSurplus;
+                            NewTurn();
+                        }
                     }
                     else
                     {
-                        TurnIndex = Index;
-                        FN.ActualInitiative = maxSurplus;
-                        NewTurn();
+                        for (int i = 0; i < activeFighters.Count; i++)
+                        {
+                            activeFighters[i].ActualInitiative += activeFighters[i].InitiativeSpeed;
+                        }
+                        FN.ActualInitiative += FN.InitiativeSpeed;
                     }
-                }
-                else
-                {
-                    for (int i = 0; i < activeFighters.Count; i++)
-                    {
-                        activeFighters[i].ActualInitiative += activeFighters[i].InitiativeSpeed;
-                    }
-                    FN.ActualInitiative += FN.InitiativeSpeed;
-                }
 
-                ID.UpdateCadres(myNewTurnOwner);
+                    ID.UpdateCadres(myNewTurnOwner);
+                }
             }
         }
 
@@ -239,7 +260,7 @@ public class TurnManager : Singleton<TurnManager>
         {
             activeFighters[i].GenerateBlockZone(false);
         }
-        if (TurnIndex < activeFighters.Count)
+        if (TurnIndex < activeFighters.Count && TurnIndex >= 0)
         {
             for (int i = 0; i < activeFighters.Count; i++)
             {
@@ -250,10 +271,12 @@ public class TurnManager : Singleton<TurnManager>
             }
             activeFighters[TurnIndex].BeforeTurn();
             myPlayingIcon.ChangePlaying(activeFighters[TurnIndex]);
+            NeedsToCool = true;
         }
 
         else
         {
+            NeedsToCool = true;
             FN.TurnStart();
             myPlayingIcon.ChangePlaying();
         }       
@@ -406,9 +429,9 @@ public class TurnManager : Singleton<TurnManager>
 
     #endregion
 
-    void SetNewBody(string FighterCode)
+    void SetNewBody(string FighterCode, bool Sleep = false)
     {
         GameObject Body = Instantiate(Resources.Load<GameObject>("Entities_Prefab/Prefab_Fighter"));
-        Body.GetComponent<FightEntity>().Activation(FighterCode);
+        Body.GetComponent<FightEntity>().Activation(FighterCode, Sleep);
     }
 }

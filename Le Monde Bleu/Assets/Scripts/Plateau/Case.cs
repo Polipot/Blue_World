@@ -5,39 +5,42 @@ using UnityEngine;
 public class Case : MonoBehaviour
 {
     [Header("Deploiement")]
-    public bool Deployable;
-    public Alignement DeployAlignement;
+    [HideInInspector] public bool Deployable;
+    [HideInInspector] public Alignement DeployAlignement;
 
     [Header("References")]
     CaseManager CM;
     TurnManager TM;
 
+    [Header("Composants")]
+    aTip myTip;
+
     [Header("Sprites Renderers")]
     SpriteRenderer myCaseSprite;
-    public SpriteRenderer myMarqueurSprite;
+    [HideInInspector] public SpriteRenderer myMarqueurSprite;
     SpriteRenderer myTexture;
     SpriteRenderer myBlockedSprite;
     Color MarqueurBaseColor;
 
     [Header("Nature et effets")]
-    public string Nom;
-    public CaseTypes myTypes;
-    public List<CaseState> myEffects;
+    [HideInInspector] public string Nom;
+    [HideInInspector] public CaseTypes myTypes;
+    [HideInInspector] public List<CaseState> myEffects;
     [Space]
     CaseProperties BurnedProperties;
 
     [Header("Entité présente")]
-    public FightEntity EntityOnTop;
+    [HideInInspector] public FightEntity EntityOnTop;
 
     [Header("Blocage")]
     public List<FightEntity> Bloqueurs;
 
     [Header("Coordonnées")]
-    public Vector2 PointInNode;
-    public bool Walkable;
-    public bool Reachable;
-    public bool Attackable;
-    public AttackDirection myDirection;
+    [HideInInspector] public Vector2 PointInNode;
+    [HideInInspector] public bool Walkable;
+    [HideInInspector] public bool Reachable;
+    [HideInInspector] public bool Attackable;
+    [HideInInspector] public AttackDirection myDirection;
 
     public void Occupied(FightEntity newEntity)
     {
@@ -56,6 +59,8 @@ public class Case : MonoBehaviour
         }
 
         TakeEffects(newEntity);
+
+        ActualizeTip();
     }
 
     public void TakeEffects(FightEntity newEntity, bool OnlyPassingBy = false, aCompetence UsedComp = null)
@@ -93,6 +98,8 @@ public class Case : MonoBehaviour
     {
         EntityOnTop = null;
         myCaseSprite.color = CM.Base;
+
+        ActualizeTip();
     }
 
     #region Highlight
@@ -250,10 +257,12 @@ public class Case : MonoBehaviour
         {
             Bloqueurs.Add(FE);
         }
-        else
+        else if(!AddBl)
         {
             Bloqueurs.Remove(FE);
         }
+
+        ActualizeTip();
     }
 
     public bool BlockedByEnemy(FightEntity Playing)
@@ -317,15 +326,21 @@ public class Case : MonoBehaviour
         Walkable = myProperties.isWalkable;
         myTexture.sprite = myProperties.CaseTexture[Random.Range(0, myProperties.CaseTexture.Count)];
 
+        if (myProperties.SpecialMaterial)
+            myTexture.material = myProperties.SpecialMaterial;
+
         if (!Walkable)
             myCaseSprite.color = new Color(0f, 0f, 0f, 0.4f);
 
         for(int i = 0; i < myProperties.ConstantEffect.Count; i++)
         {
-            ApplyNewCaseState(myProperties.ConstantEffect[i]);
+            ApplyNewCaseState(myProperties.ConstantEffect[i], 0, true);
         }
 
-        BurnedProperties = myProperties.Burned;
+        BurnedProperties = myProperties.Burned; // ??? Hein?
+
+        myTip = GetComponent<aTip>();
+        ActualizeTip();
     }
 
     #endregion
@@ -356,10 +371,12 @@ public class Case : MonoBehaviour
         myClone.MyPPGTChance = myClone.BasePPGTChance - myClone.LessPPGT * HeritageM;
         myClone.Heritage = HeritageM + 1;
 
+        myClone.Dangerosity = myModel.Dangerosity;
+
         return myClone;
     }
 
-    public void ApplyNewCaseState(string Path, int HeritageM = 0)
+    public void ApplyNewCaseState(string Path, int HeritageM = 0, bool FromDeployment = false)
     {
         CaseState toApply = CloneOf(Path, HeritageM);
         toApply.myCase = this;
@@ -367,6 +384,8 @@ public class Case : MonoBehaviour
         if ((myTypes.HasFlag(toApply.CaseTypesAllowed) || toApply.CaseTypesAllowed == CaseTypes.Everything) && !DoesEffectsContain(toApply.name))
         {
             myEffects.Add(toApply);
+            if (!FromDeployment)
+                ActualizeTip();
 
             if (toApply.Effect != null)
             {
@@ -410,9 +429,16 @@ public class Case : MonoBehaviour
         if(myIndex != myEffects.Count)
         {
             if (myEffects[myIndex].Effect != null)
+            {
                 myEffects[myIndex].Effect.gameObject.GetComponent<AutoDestruction>().DestroyActivated = true;
+                ParticleLightSpawner particleLightSpawner = myEffects[myIndex].Effect.gameObject.GetComponent<ParticleLightSpawner>();
+                if (particleLightSpawner)
+                    particleLightSpawner.LightDeath();
+            }
             if (BurnedProperties)
                 Traduction(BurnedProperties);
+            else
+                ActualizeTip();
             myEffects.RemoveAt(myIndex); 
         }
     }
@@ -469,6 +495,70 @@ public class Case : MonoBehaviour
     {
         myNewEntity.transform.position = transform.position;
         myNewEntity.OccupyCase();
+    }
+
+    #endregion
+
+    #region Tips
+
+    void ActualizeTip()
+    {
+        myTip.ToShow = "<b>" + Nom + "</b>";
+
+        foreach(CaseState states in myEffects)
+        {
+            myTip.ToShow += "\n<color=" + GetRIchTextColor(states.Dangerosity) + ">"+ states.name + "</color>";
+        }
+
+        if (EntityOnTop)
+            myTip.ToShow += "\n<color=" + GetRIchTextColor(EntityOnTop.myAlignement) + ">Occupied by " + EntityOnTop.Nom + "</color>";
+
+        foreach(FightEntity blockers in Bloqueurs)
+        {
+            myTip.ToShow += "\n<color=" + GetRIchTextColor(blockers.myAlignement) + ">Blocked by " + blockers.Nom + "</color>";
+        }
+    }
+
+    string GetRIchTextColor(Alignement alignement)
+    {
+        string myTextColor = "white";
+        switch (alignement)
+        {
+            case Alignement.Membre:
+                myTextColor = "green";
+                break;
+            case Alignement.Allié:
+                myTextColor = "#69C0FF";
+                break;
+            case Alignement.Ennemi:
+                myTextColor = "red";
+                break;
+            default:
+                break;
+        }
+
+        return myTextColor;
+    }
+
+    string GetRIchTextColor(int dangerosity)
+    {
+        string myTextColor = "white";
+        switch (dangerosity)
+        {
+            case 2:
+                myTextColor = "green";
+                break;
+            case 1:
+                myTextColor = "yellow";
+                break;
+            case 0:
+                myTextColor = "red";
+                break;
+            default:
+                break;
+        }
+
+        return myTextColor;
     }
 
     #endregion

@@ -21,7 +21,7 @@ public class FighterEditor : Editor
 
             loadInto.Nom = myFightEntity.Nom;
             loadInto.SaveIndex = myFightEntity.SaveIndex;
-            loadInto.HeroType = myFightEntity.HeroType;
+            loadInto.HeroType = myFightEntity.FighterType;
             loadInto.Description = myFightEntity.Description;
             loadInto.myClasse = myFightEntity.myClasse;
             loadInto.myAlignement = myFightEntity.myAlignement;
@@ -88,11 +88,11 @@ public class FighterEditor : Editor
             AssetDatabase.Refresh();
         }
 
-        if (GUILayout.Button("New Index & New Dir. if null") && myFightEntity.HeroType != "")
+        if (GUILayout.Button("New Index & New Dir. if null") && myFightEntity.FighterType != "")
         {
-            if (!Directory.Exists(Application.streamingAssetsPath + "/SavedCharacters/" + myFightEntity.HeroType))
-                Directory.CreateDirectory(Application.streamingAssetsPath + "/SavedCharacters/" + myFightEntity.HeroType);
-            myFightEntity.SaveIndex = Directory.GetFiles(Application.streamingAssetsPath + "/SavedCharacters/" + myFightEntity.HeroType, "*", SearchOption.TopDirectoryOnly).Length / 2;
+            if (!Directory.Exists(Application.streamingAssetsPath + "/SavedCharacters/" + myFightEntity.FighterType))
+                Directory.CreateDirectory(Application.streamingAssetsPath + "/SavedCharacters/" + myFightEntity.FighterType);
+            myFightEntity.SaveIndex = Directory.GetFiles(Application.streamingAssetsPath + "/SavedCharacters/" + myFightEntity.FighterType, "*", SearchOption.TopDirectoryOnly).Length / 2;
         }
     }
 }

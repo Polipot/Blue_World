@@ -17,6 +17,10 @@ MonoBehaviour:
   isBlockingVision: 0
   CaseTexture:
   - {fileID: 21300000, guid: f72cc1e2b814dec49890b4d586a83a91, type: 3}
+  - {fileID: 21300000, guid: ca1929dc8ea9bdb4e9a409a6dc7ac56e, type: 3}
+  - {fileID: 21300000, guid: cfb466aa4ee974140b43ad42e538adce, type: 3}
+  - {fileID: 21300000, guid: 1bc461c5944364b46a59992fbba3dc1f, type: 3}
+  - {fileID: 21300000, guid: 50d0156ae790c3d4a8c954639a50096a, type: 3}
   myCaseType: 0
   ConstantEffect: []
   Burned: {fileID: 0}

@@ -38,6 +38,7 @@ MonoBehaviour:
   - {x: -1, y: 0}
   - {x: 1, y: 0}
   Logo: {fileID: 21300000, guid: aa4e035c96740484b8f32e40d92927be, type: 3}
+  CultureColor: {r: 0.15686275, g: 0.84705883, b: 1, a: 1}
   TriggerName: Attack
   BaseOpportunity: 3
   PatternIsDirectionnal: 1

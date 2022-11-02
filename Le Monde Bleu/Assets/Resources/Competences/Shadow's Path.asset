@@ -44,6 +44,7 @@ MonoBehaviour:
   PaternCase:
   - {x: 0, y: 0}
   Logo: {fileID: 0}
+  CultureColor: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
   TriggerName: Teleport
   BaseOpportunity: 0
   PatternIsDirectionnal: 0

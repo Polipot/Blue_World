@@ -13,12 +13,12 @@ public class TheGrid : Singleton<TheGrid>
     [Header("Grid Values")]
     public bool DisplayGridGizmos;
     public LayerMask unwalkableMask;
-    public Vector2 gridWorldSize;
+    [HideInInspector] public Vector2 gridWorldSize;
     public float nodeRadius;
     public Node[,] grid;
 
     float nodeDiameter;
-    public int gridSizeX, gridSizeY;
+    [HideInInspector] public int gridSizeX, gridSizeY;
 
     void Awake()
     {

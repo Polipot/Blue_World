@@ -12,8 +12,8 @@ public class aCompetence : ScriptableObject
 
     [Header("Global")]
     public string Name;
-    [HideInInspector]public FightEntity myFighter;
-    public aWeapon LinkedWeapon;
+    [HideInInspector] public FightEntity myFighter;
+    [HideInInspector] public aWeapon LinkedWeapon;
     public WeaponType WeaponFilter;
     [TextArea(10, 30)]
     public string Description;
@@ -34,7 +34,8 @@ public class aCompetence : ScriptableObject
     public float InitiativeDegats;
     [Header("Etats")]
     public List<string> AppliedStates;
-    public List<aStateModel> ModelStates;
+    [HideInInspector] public List<aStateModel> ModelStates;
+    public List<string> AppliedCaseStates;
     [Header("Poussée")]
     public int Poussée;
     [Header("Pattern")]
@@ -42,6 +43,7 @@ public class aCompetence : ScriptableObject
     public List<Vector2> PaternCase;
     [Header("Graphisms")]
     public Sprite Logo;
+    public Color CultureColor;
     [Header("Animations")]
     public string TriggerName;
     [Space]
@@ -121,15 +123,19 @@ public class aCompetence : ScriptableObject
         for (int i = 0; i < AppliedStates.Count; i++)
         {
             toShow += "\n<color=green>Applies <b>" + AppliedStates[i] + "</b></color>";
-            if(WeaponFilter != WeaponType.Everything)
+            if(!WeaponFilter.HasFlag(WeaponType.Everything))
             {
                 toShow += "\n<color=yellow>Appliable on </color>";
                 WeaponType myWeaponType = WeaponFilter;
                 List<string> AllowedTypes = new List<string>();
 
                 foreach (WeaponType value in WeaponType.GetValues(typeof(WeaponType)))
+                {
                     if (myWeaponType.HasFlag(value) && value != WeaponType.None)
+                    {
                         AllowedTypes.Add(TS.NameFromWeaponType(value));
+                    }
+                }
 
                 for(int a = 0; a < AllowedTypes.Count; a++)
                 {
@@ -137,7 +143,7 @@ public class aCompetence : ScriptableObject
                         toShow += "<color=yellow>, </color>";
                     else if (a != 0 && a + 1 >= AllowedTypes.Count)
                         toShow += "<color=yellow> and </color>";
-                    toShow += "<color=yellow>" + AllowedTypes[i] + "</color>";
+                    toShow += "<color=yellow>" + AllowedTypes[a] + "</color>";
                 }
             }
         }

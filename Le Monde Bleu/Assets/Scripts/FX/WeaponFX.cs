@@ -10,6 +10,8 @@ public class WeaponFX : MonoBehaviour
     public TrailRenderer TR;
     public ParticleSystem PS;
 
+    PopUpLight myLight;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -25,17 +27,29 @@ public class WeaponFX : MonoBehaviour
 
     public void ActivateTrail()
     {
-        if(TR)
+        if (TR)
+        {
             TR.emitting = true;
-        if(PS)
+            myLight = Instantiate(Resources.Load<GameObject>("Lights/Point Light 2D"), TR.transform.position, TR.transform.rotation).GetComponent<PopUpLight>();
+            myLight.Activation(TR.startColor, 0.1f , true ,TR.transform);
+        }
+
+        if (PS)
+        {
             PS.Play();
+            PS.GetComponent<ParticleLightSpawner>().ActivateLight();
+        }
+
     }
     public void StopTrail()
     {
-        if(TR)
+        if (TR)
             TR.emitting = false;
         if (PS)
+        {
             PS.Stop();
+            PS.GetComponent<ParticleLightSpawner>().LightPurgatory();
+        }
     }
 
     public void EndAnim()

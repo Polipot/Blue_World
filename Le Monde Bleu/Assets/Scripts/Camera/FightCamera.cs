@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class FightCamera : Singleton<FightCamera>
 {
-    public Transform target;
-    public Transform shordLivedTarget;
+    [HideInInspector] public Transform target;
+    [HideInInspector] public Transform shordLivedTarget;
     [HideInInspector] public Vector3 NonLivingTarget;
     bool hasTarget => shordLivedTarget || target || (NonLivingTarget != Vector3.zero); 
-    public bool SoloTraject;
+    [HideInInspector] public bool SoloTraject;
     [HideInInspector]
     public Animator CameraAnimator;
     Camera myCamera;

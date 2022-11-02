@@ -35,6 +35,7 @@ MonoBehaviour:
   PaternCase:
   - {x: 0, y: 0}
   Logo: {fileID: 0}
+  CultureColor: {r: 0.5647059, g: 0.24705882, b: 0.18431373, a: 1}
   TriggerName: ShieldBash
   BaseOpportunity: 0
   PatternIsDirectionnal: 0

@@ -17,7 +17,9 @@ public class CaseProperties : ScriptableObject
     [Space]
     public bool isWalkable;
     public bool isBlockingVision;
+    [Header("Textures & Material")]
     public List<Sprite> CaseTexture;
+    public Material SpecialMaterial;
     [Space]
     public CaseTypes myCaseType;
     [Space]
